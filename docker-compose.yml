@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dbi-task-db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD:-YourStrong@Passw0rd}
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - dbi-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${DB_PASSWORD:-YourStrong@Passw0rd}" -Q "SELECT 1"
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # ASP.NET Core API
+  api:
+    build:
+      context: .
+      dockerfile: src/DBI.Task.API/Dockerfile
+    container_name: dbi-task-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=DBITaskDB;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=True;
+      - Jwt__Secret=${JWT_SECRET:-DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security}
+      - Jwt__Issuer=DBI.Task.API
+      - Jwt__Audience=DBI.Task.Client
+      - Jwt__ExpiryMinutes=60
+      - Email__SmtpServer=${SMTP_SERVER:-smtp.gmail.com}
+      - Email__SmtpPort=${SMTP_PORT:-587}
+      - Email__Username=${SMTP_USERNAME}
+      - Email__Password=${SMTP_PASSWORD}
+      - Email__FromEmail=${FROM_EMAIL:-noreply@dbi.com}
+      - Email__FromName=DBI Task
+      - Cors__AllowedOrigins=http://localhost:3000
+    ports:
+      - "5000:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - dbi-network
+    restart: unless-stopped
+
+  # React Frontend
+  web:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: dbi-task-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - dbi-network
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
+    driver: local
+
+networks:
+  dbi-network:
+    driver: bridge

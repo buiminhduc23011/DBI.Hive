@@ -1,0 +1,12 @@
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.AssemblyInfoInputs.cache
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.AssemblyInfo.cs
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.csproj.CoreCompileInputs.cache
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.sourcelink.json
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\bin\Debug\net8.0\DBI.Task.Domain.deps.json
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\bin\Debug\net8.0\DBI.Task.Domain.dll
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\bin\Debug\net8.0\DBI.Task.Domain.pdb
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.dll
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\refint\DBI.Task.Domain.dll
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.pdb
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\ref\DBI.Task.Domain.dll
