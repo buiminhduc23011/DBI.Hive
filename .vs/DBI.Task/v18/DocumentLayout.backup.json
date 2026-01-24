@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\dbi.task.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\dbi.task.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A3333333-3333-3333-3333-333333333333}|src\\DBI.Task.Application\\DBI.Task.Application.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A3333333-3333-3333-3333-333333333333}|src\\DBI.Task.Application\\DBI.Task.Application.csproj|solutionrelative:src\\dbi.task.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|c:\\users\\ducbu\\documents\\github\\dbi.hive\\src\\dbi.task.api\\dbi.task.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{A4444444-4444-4444-4444-444444444444}|src\\DBI.Task.API\\DBI.Task.API.csproj|solutionrelative:src\\dbi.task.api\\dbi.task.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,6 +47,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "src\\DBI.Task.API\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Properties\\launchSettings.json*",
+              "RelativeToolTip": "src\\DBI.Task.API\\Properties\\launchSettings.json*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-24T09:30:15.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Dockerfile",
+              "RelativeDocumentMoniker": "src\\DBI.Task.API\\Dockerfile",
+              "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Dockerfile",
+              "RelativeToolTip": "src\\DBI.Task.API\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-01-24T09:30:12.72Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "src\\DBI.Task.Application\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\Services\\AuthService.cs",
+              "RelativeToolTip": "src\\DBI.Task.Application\\Services\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:30:05.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Program.cs",
+              "RelativeDocumentMoniker": "src\\DBI.Task.API\\Program.cs",
+              "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Program.cs",
+              "RelativeToolTip": "src\\DBI.Task.API\\Program.cs",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAcwKsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:29:55.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "DBI.Task.API",
               "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\DBI.Task.API.csproj",
               "RelativeDocumentMoniker": "src\\DBI.Task.API\\DBI.Task.API.csproj",
@@ -42,7 +110,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\appsettings.json",
               "RelativeDocumentMoniker": "src\\DBI.Task.API\\appsettings.json",
@@ -50,7 +118,8 @@
               "RelativeToolTip": "src\\DBI.Task.API\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-01T02:55:18.222Z"
+              "WhenOpened": "2025-12-01T02:55:18.222Z",
+              "EditorCaption": ""
             }
           ]
         }

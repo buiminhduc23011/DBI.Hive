@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DBI.Task.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f24eb53fdcbd6d347aa59ac1fcd948a1552da087")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d3c25716a01909113eec3afcd3b38bc549c768d")]
 [assembly: System.Reflection.AssemblyProductAttribute("DBI.Task.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DBI.Task.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

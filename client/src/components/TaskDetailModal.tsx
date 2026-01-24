@@ -195,8 +195,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 lg:p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-none lg:rounded-xl shadow-2xl w-full lg:max-w-3xl h-full lg:h-auto lg:max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
@@ -250,7 +250,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                             ) : (
                                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{task.title}</h2>
                             )}
-                            
+
                             {isEditing ? (
                                 <textarea
                                     value={editData.description}
@@ -332,9 +332,9 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                         <option value="">{language === 'vi' ? 'Chưa gán' : 'Unassigned'}</option>
                                         {(() => {
                                             const taskProject = projects.find(p => p.id === task.projectId);
-                                            const projectMembers = users.filter(u => 
+                                            const projectMembers = users.filter(u =>
                                                 taskProject && (
-                                                    u.id === taskProject.ownerId || 
+                                                    u.id === taskProject.ownerId ||
                                                     taskProject.memberIds.includes(u.id)
                                                 )
                                             );
@@ -405,16 +405,16 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                         {(() => {
                             const taskProject = projects.find(p => p.id === task.projectId);
                             const isProjectMember = taskProject && (
-                                taskProject.ownerId === user?.id || 
+                                taskProject.ownerId === user?.id ||
                                 taskProject.memberIds.includes(user?.id || '')
                             );
-                            
+
                             if (!isProjectMember) {
                                 return (
                                     <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                                         <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                                            {language === 'vi' 
-                                                ? 'Chỉ thành viên dự án mới được xem bình luận' 
+                                            {language === 'vi'
+                                                ? 'Chỉ thành viên dự án mới được xem bình luận'
                                                 : 'Only project members can view comments'}
                                         </p>
                                     </div>
@@ -428,65 +428,65 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                         <span>{language === 'vi' ? 'Bình luận' : 'Comments'} ({comments.length})</span>
                                     </h3>
 
-                            {/* Comment List */}
-                            <div className="space-y-4 mb-4 max-h-60 overflow-y-auto">
-                                {isLoadingComments ? (
-                                    <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-                                        {language === 'vi' ? 'Đang tải...' : 'Loading...'}
-                                    </div>
-                                ) : comments.length === 0 ? (
-                                    <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-                                        {language === 'vi' ? 'Chưa có bình luận' : 'No comments yet'}
-                                    </div>
-                                ) : (
-                                    comments.map((comment) => (
-                                        <div key={comment.id} className="flex space-x-3">
-                                            {comment.userAvatar ? (
-                                                <img src={comment.userAvatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-dbi-primary flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
-                                                    {getInitials(comment.userName)}
-                                                </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-2">
-                                                        <span className="font-medium text-gray-800 dark:text-white text-sm">{comment.userName}</span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(comment.createdAt)}</span>
-                                                    </div>
-                                                    {comment.userId === user?.id && (
-                                                        <button
-                                                            onClick={() => handleDeleteComment(comment.id)}
-                                                            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{comment.content}</p>
+                                    {/* Comment List */}
+                                    <div className="space-y-4 mb-4 max-h-60 overflow-y-auto">
+                                        {isLoadingComments ? (
+                                            <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+                                                {language === 'vi' ? 'Đang tải...' : 'Loading...'}
                                             </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
+                                        ) : comments.length === 0 ? (
+                                            <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+                                                {language === 'vi' ? 'Chưa có bình luận' : 'No comments yet'}
+                                            </div>
+                                        ) : (
+                                            comments.map((comment) => (
+                                                <div key={comment.id} className="flex space-x-3">
+                                                    {comment.userAvatar ? (
+                                                        <img src={comment.userAvatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                                                    ) : (
+                                                        <div className="w-8 h-8 rounded-full bg-dbi-primary flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+                                                            {getInitials(comment.userName)}
+                                                        </div>
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center space-x-2">
+                                                                <span className="font-medium text-gray-800 dark:text-white text-sm">{comment.userName}</span>
+                                                                <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(comment.createdAt)}</span>
+                                                            </div>
+                                                            {comment.userId === user?.id && (
+                                                                <button
+                                                                    onClick={() => handleDeleteComment(comment.id)}
+                                                                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{comment.content}</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
 
-                            {/* Add Comment Form */}
-                            <form onSubmit={handleAddComment} className="flex space-x-2">
-                                <input
-                                    type="text"
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    placeholder={language === 'vi' ? 'Viết bình luận...' : 'Write a comment...'}
-                                    className="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:text-white focus:ring-2 focus:ring-dbi-primary focus:border-transparent"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting || !newComment.trim()}
-                                    className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
-                                >
-                                    <Send size={18} />
-                                </button>
-                            </form>
+                                    {/* Add Comment Form */}
+                                    <form onSubmit={handleAddComment} className="flex space-x-2">
+                                        <input
+                                            type="text"
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            placeholder={language === 'vi' ? 'Viết bình luận...' : 'Write a comment...'}
+                                            className="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:text-white focus:ring-2 focus:ring-dbi-primary focus:border-transparent"
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting || !newComment.trim()}
+                                            className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
+                                        >
+                                            <Send size={18} />
+                                        </button>
+                                    </form>
                                 </div>
                             );
                         })()}
