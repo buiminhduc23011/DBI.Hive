@@ -1,240 +1,139 @@
-# DBI Task - Task Management System
+# DBI Task
 
-A modern, full-stack task management application for the DBI ecosystem, built with ASP.NET Core and React.
+A modern task management system for team collaboration, using ASP.NET Core 8 and React 19.
 
-![DBI Task](https://img.shields.io/badge/Version-1.0.0-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue)]()
+[![License](https://img.shields.io/badge/License-MIT-green)]()
+[![.NET](https://img.shields.io/badge/.NET-8.0-purple)]()
+[![React](https://img.shields.io/badge/React-19-61DAFB)]()
 
-## 🚀 Features
+## Features
 
-### Core Functionality
-- **Project Management** - Organize tasks by projects and sprints/phases
-- **Kanban Board** - Visual task management with drag & drop
-- **Backlog Management** - Store and prioritize pending tasks
-- **Dashboard** - Real-time overview of tasks, deadlines, and progress
-- **Task Filtering** - Advanced filtering by project, assignee, status, priority, and deadline
-- **Comments & Attachments** - Collaborate with team members
-- **Notifications** - Email and in-app notifications for deadlines and assignments
-- **Activity Logging** - Track all changes and actions
-- **Timeline View** - Visualize project schedules
+| Feature | Description |
+|---------|-------------|
+| **Kanban Board** | Visual agile task management with drag & drop |
+| **Backlog & Sprints** | Organize work items by sprints and phases |
+| **Calendar View** | Schedule and visualize task deadlines |
+| **Dashboard** | Real-time overview of project progress and stats |
+| **Collaboration** | Comments, file attachments, and activity logs |
+| **Personalization** | Dark/Light mode, English/Vietnamese (i18n) support |
+| **Notifications** | Email alerts and in-app reminders |
+| **Security** | Role-based (Admin/Member/Viewer) & JWT Authentication |
 
-### Technical Features
-- **JWT Authentication** with refresh tokens
-- **Role-based Access Control** (Admin, Member, Viewer)
-- **RESTful API** with Swagger documentation
-- **Background Jobs** for automatic notifications
-- **Webhook Infrastructure** for DBI ecosystem integration
-- **Responsive Design** - Works on desktop, tablet, and mobile
+## Architecture
 
-## 🏗️ Tech Stack
-
-### Backend
-- **ASP.NET Core 8.0** - Web API framework
-- **MongoDB** - NoSQL Database
-- **MongoDB.Driver** - Database driver
-- **JWT** - Authentication
-- **SMTP** - Email notifications
-
-### Frontend
-- **React 18** with TypeScript
-- **Vite** - Build tool
-- **TailwindCSS** - Styling
-- **Zustand** - State management
-- **React Router** - Navigation
-- **dnd-kit** - Drag & drop
-- **Axios** - HTTP client
-- **Lucide React** - Icons
-
-### DevOps
-- **Docker** & **Docker Compose**
-- **Nginx** - Reverse proxy for frontend
-
-## 📁 Project Structure
+The project follows **Domain-Driven Design (DDD)** and **Clean Architecture** principles:
 
 ```
 DBI.Hive/
 ├── src/
-│   ├── DBI.Task.Domain/          # Domain entities and enums
-│   ├── DBI.Task.Infrastructure/  # Data access and services
-│   ├── DBI.Task.Application/     # Business logic and DTOs
-│   └── DBI.Task.API/             # REST API controllers
-├── client/                        # React frontend
-│   ├── src/
-│   │   ├── components/           # Reusable UI components
-│   │   ├── pages/                # Page components
-│   │   ├── stores/               # Zustand stores
-│   │   └── services/             # API services
-│   └── public/
-├── docs/                          # Documentation
-├── docker-compose.yml             # Container orchestration
-└── DBI.Task.sln                  # Solution file
+│   ├── DBI.Task.Domain/           # Core Entities (Project, Task, Sprint, User)
+│   ├── DBI.Task.Application/      # DTOs, CQRS, Interfaces, Business Logic
+│   ├── DBI.Task.Infrastructure/   # MongoDB Context, Repositories, Services
+│   └── DBI.Task.API/              # REST Controllers, Middleware, SignalR
+├── client/                         # React SPA (Vite + TypeScript + Tailwind)
+├── deploy/                         # Automated deployment scripts for Windows
+├── docs/                           # Technical documentation
+└── docker-compose.yml              # Container orchestration
 ```
 
-## 🚀 Quick Start
+## Tech Stack
+
+**Backend**
+- **Framework:** ASP.NET Core 8.0 Web API
+- **Database:** MongoDB
+- **Auth:** JWT with Refresh Tokens
+- **Mail:** SMTP (Gmail/Custom)
+
+**Frontend**
+- **Core:** React 19, TypeScript, Vite
+- **State:** Zustand
+- **UI:** TailwindCSS, Lucide Icons
+- **Drag & Drop:** dnd-kit
+
+**DevOps**
+- Docker & Docker Compose
+- Windows PowerShell Automation
+
+## Quick Start
 
 ### Prerequisites
+
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Node.js 18+](https://nodejs.org/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (optional)
+- [MongoDB](https://www.mongodb.com/try/download/community) or Docker
 
-### Option 1: Run with Docker (Recommended)
+### Option 1: Docker (Recommended)
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/DBI.Hive.git
-   cd DBI.Hive
-   ```
+```bash
+# Clone repository
+git clone https://github.com/yourusername/DBI.Hive.git
+cd DBI.Hive
 
-2. **Create environment file:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+# Configure environment
+cp .env.example .env
 
-3. **Start all services:**
-   ```bash
-   docker-compose up -d
-   ```
+# Start services
+docker-compose up -d
+```
 
-4. **Access the application:**
-   - Frontend: http://localhost:3000
-   - API: http://localhost:5000
-   - Swagger UI: http://localhost:5000/swagger
+- **Frontend:** `http://localhost:3000`
+- **API Swagger:** `http://localhost:5000/swagger`
 
-### Option 2: Run Locally
+### Option 2: Local Development
 
-#### Backend
+**Backend:**
 ```bash
 cd src/DBI.Task.API
 dotnet restore
-dotnet ef database update
 dotnet run
 ```
 
-#### Frontend
+**Frontend:**
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-## 📦 Database Migration
+### Option 3: Windows Deployment
 
-Create and apply migrations:
+Automated deployment on Windows Server via PowerShell:
 
-```bash
-cd src/DBI.Task.API
-dotnet ef migrations add InitialCreate --project ../DBI.Task.Infrastructure
-dotnet ef database update
+```powershell
+cd deploy
+.\install.ps1
 ```
 
-## 🔑 Default Credentials
+See [WINDOWS_DEPLOYMENT.md](docs/WINDOWS_DEPLOYMENT.md) for full details.
 
-After first run, register a new account or use seed data (if implemented).
+## Configuration
 
-## 📚 API Documentation
+| Setting | Environment Variable | Default |
+|---------|----------------------|---------|
+| Database Connection | `MongoDB__ConnectionString` | `mongodb://localhost:27017` |
+| Database Name | `MongoDB__DatabaseName` | `DBITaskDB` |
+| JWT Secret | `Jwt__Secret` | *(Set in .env)* |
+| SMTP Server | `Email__SmtpServer` | `smtp.gmail.com` |
 
-Once the API is running, visit:
-- Swagger UI: `http://localhost:5000/swagger`
-- See [docs/API.md](docs/API.md) for detailed endpoint documentation
+## Documentation
 
-## 🎨 UI Screenshots
+- [API Reference](docs/API.md) - Endpoints and schemas.
+- [Database Schema](docs/DATABASE.md) - MongoDB collections structure.
+- [Deployment Guide](docs/DEPLOYMENT.md) - Docker/Linux deployment.
+- [Windows Deployment](docs/WINDOWS_DEPLOYMENT.md) - IIS/Windows Service guide.
 
-### Dashboard
-![Dashboard](docs/images/dashboard.png)
+## Roadmap
 
-### Kanban Board
-![Kanban](docs/images/kanban.png)
+- [ ] Real-time updates with SignalR
+- [ ] Advanced Gantt Chart
+- [ ] Mobile App (React Native)
+- [ ] Time Tracking & Reporting
 
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd src/DBI.Task.API
-dotnet test
-```
-
-### Frontend Tests
-```bash
-cd client
-npm test
-```
-
-## 🌍 Deployment
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for deployment guides:
-- Ubuntu VPS
-- Azure App Service
-- AWS ECS
-
-## 🔧 Configuration
-
-### Email Notifications
-Configure SMTP settings in `appsettings.json` or environment variables:
-```json
-{
-  "Email": {
-    "SmtpServer": "smtp.gmail.com",
-    "SmtpPort": "587",
-    "Username": "your-email@gmail.com",
-    "Password": "your-app-password"
-  }
-}
-```
-
-### JWT Settings
-```json
-{
-  "Jwt": {
-    "Secret": "your-secret-key-min-32-characters",
-    "Issuer": "DBI.Task.API",
-    "Audience": "DBI.Task.Client",
-    "ExpiryMinutes": "60"
-  }
-}
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🐛 Known Issues
-
-- Timeline/Gantt view is a placeholder - full implementation pending
-- File upload size limited to 10MB
-
-## 🗺️ Roadmap
-
-- [ ] Real-time collaboration with SignalR
-- [ ] Advanced Gantt chart view
-- [ ] Mobile app (React Native)
-- [ ] MS Teams integration
-- [ ] Advanced reporting and analytics
-- [ ] Task templates
-- [ ] Time tracking
-
-## 💬 Support
-
-For questions or issues:
-- Open an issue on GitHub
-- Contact: support@dbi.com
-
-## 👏 Acknowledgments
-
-- Built with ❤️ for the DBI ecosystem
-- Icons by [Lucide](https://lucide.dev/)
-- UI inspired by modern task management tools
-
 ---
 
-**Made with ❤️ by DBI Team**
+**DBI Team** - Built for high-performance collaboration.

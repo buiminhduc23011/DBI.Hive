@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qaXuGG89Hho=",
+  "dgSpecHash": "Sc6re7LJd1w=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
+  "projectFilePath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ducbu\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\ducbu\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",
