@@ -1,17 +1,28 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace DBI.Task.Domain.Entities;
 
-public class Sprint
+public class Sprint : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("name")]
     public string Name { get; set; } = string.Empty;
+
+    [BsonElement("description")]
     public string? Description { get; set; }
-    public int ProjectId { get; set; }
+
+    [BsonElement("projectId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string ProjectId { get; set; } = string.Empty;
+
+    [BsonElement("startDate")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime StartDate { get; set; }
+
+    [BsonElement("endDate")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime EndDate { get; set; }
+
+    [BsonElement("isActive")]
     public bool IsActive { get; set; } = false;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    // Navigation properties
-    public Project Project { get; set; } = null!;
-    public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
 }

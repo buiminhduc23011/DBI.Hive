@@ -17,16 +17,16 @@ export enum Priority {
 }
 
 export interface Task {
-    id: number;
+    id: string;
     title: string;
     description?: string;
     status: TaskItemStatus;
     priority: Priority;
-    projectId: number;
+    projectId: string;
     projectName: string;
-    sprintId?: number;
+    sprintId?: string;
     sprintName?: string;
-    assignedToId?: number;
+    assignedToId?: string;
     assignedToName?: string;
     deadline?: string;
     createdAt: string;
@@ -38,7 +38,7 @@ export interface Task {
 }
 
 export interface Project {
-    id: number;
+    id: string;
     name: string;
     description?: string;
     color?: string;
@@ -47,20 +47,38 @@ export interface Project {
     isArchived: boolean;
     taskCount: number;
     completedTaskCount: number;
+    ownerId: string;
+    memberIds: string[];
+    memberRoles: Record<string, string>;
+}
+
+export interface User {
+    id: string;
+    email: string;
+    fullName: string;
+    avatarUrl?: string;
+    role: string;
 }
 
 interface ProjectState {
     projects: Project[];
     selectedProject: Project | null;
     tasks: Task[];
+    users: User[];
     isLoading: boolean;
     error: string | null;
 
-    fetchProjects: () => Promise<void>;
+    fetchProjects: (includeArchived?: boolean) => Promise<void>;
     fetchTasks: (filter?: any) => Promise<void>;
+    fetchUsers: () => Promise<void>;
+    createProject: (project: Partial<Project>) => Promise<void>;
+    updateProject: (id: string, updates: Partial<Project>) => Promise<void>;
+    deleteProject: (id: string) => Promise<void>;
     createTask: (task: Partial<Task>) => Promise<void>;
-    updateTask: (id: number, updates: Partial<Task>) => Promise<void>;
-    deleteTask: (id: number) => Promise<void>;
+    updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+    deleteTask: (id: string) => Promise<void>;
+    addProjectMember: (projectId: string, email: string, role?: string) => Promise<void>;
+    removeProjectMember: (projectId: string, userId: string) => Promise<void>;
     setSelectedProject: (project: Project | null) => void;
 }
 
@@ -68,16 +86,18 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     projects: [],
     selectedProject: null,
     tasks: [],
+    users: [],
     isLoading: false,
     error: null,
 
-    fetchProjects: async () => {
+    fetchProjects: async (includeArchived = false) => {
         try {
             set({ isLoading: true, error: null });
-            const response = await api.get('/projects');
+            const response = await api.get('/projects', { params: { includeArchived } });
             set({ projects: response.data, isLoading: false });
         } catch (error: any) {
-            set({ error: error.message, isLoading: false });
+            console.error('Failed to fetch projects:', error);
+            set({ error: error.message, isLoading: false, projects: [] });
         }
     },
 
@@ -87,7 +107,50 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             const response = await api.get('/tasks', { params: filter });
             set({ tasks: response.data, isLoading: false });
         } catch (error: any) {
-            set({ error: error.message, isLoading: false });
+            console.error('Failed to fetch tasks:', error);
+            set({ error: error.message, isLoading: false, tasks: [] });
+        }
+    },
+
+    fetchUsers: async () => {
+        try {
+            const response = await api.get('/auth/users');
+            set({ users: response.data });
+        } catch (error: any) {
+            console.error('Failed to fetch users:', error);
+            set({ users: [] });
+        }
+    },
+
+    createProject: async (project) => {
+        try {
+            const response = await api.post('/projects', project);
+            set({ projects: [...get().projects, response.data] });
+        } catch (error: any) {
+            set({ error: error.message });
+            throw error;
+        }
+    },
+
+    updateProject: async (id, updates) => {
+        try {
+            const response = await api.put(`/projects/${id}`, updates);
+            set({
+                projects: get().projects.map((p) => (p.id === id ? response.data : p)),
+            });
+        } catch (error: any) {
+            set({ error: error.message });
+            throw error;
+        }
+    },
+
+    deleteProject: async (id) => {
+        try {
+            await api.delete(`/projects/${id}`);
+            set({ projects: get().projects.filter((p) => p.id !== id) });
+        } catch (error: any) {
+            set({ error: error.message });
+            throw error;
         }
     },
 
@@ -102,13 +165,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     },
 
     updateTask: async (id, updates) => {
+        // Optimistic update - update UI immediately
+        const previousTasks = get().tasks;
+        set({
+            tasks: get().tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+        });
+        
         try {
             const response = await api.put(`/tasks/${id}`, updates);
+            // Update with server response
             set({
                 tasks: get().tasks.map((t) => (t.id === id ? response.data : t)),
             });
         } catch (error: any) {
-            set({ error: error.message });
+            // Rollback on error
+            set({ tasks: previousTasks, error: error.message });
             throw error;
         }
     },
@@ -117,6 +188,32 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         try {
             await api.delete(`/tasks/${id}`);
             set({ tasks: get().tasks.filter((t) => t.id !== id) });
+        } catch (error: any) {
+            set({ error: error.message });
+            throw error;
+        }
+    },
+
+    addProjectMember: async (projectId, email, role = 'Member') => {
+        try {
+            const response = await api.post(`/projects/${projectId}/members`, { email, role });
+            const projects = get().projects.map(p => 
+                p.id === projectId ? response.data : p
+            );
+            set({ projects });
+        } catch (error: any) {
+            set({ error: error.message });
+            throw error;
+        }
+    },
+
+    removeProjectMember: async (projectId, userId) => {
+        try {
+            const response = await api.delete(`/projects/${projectId}/members/${userId}`);
+            const projects = get().projects.map(p => 
+                p.id === projectId ? response.data : p
+            );
+            set({ projects });
         } catch (error: any) {
             set({ error: error.message });
             throw error;

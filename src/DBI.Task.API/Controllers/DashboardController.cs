@@ -20,13 +20,10 @@ public class DashboardController : ControllerBase
     [HttpGet]
     public async System.Threading.Tasks.Task<IActionResult> GetDashboard([FromQuery] bool myTasksOnly = false)
     {
-        int? userId = null;
-        if (myTasksOnly)
-        {
-            userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        }
+        // Always get current user to filter by their projects
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
-        var dashboard = await _dashboardService.GetDashboardDataAsync(userId);
+        var dashboard = await _dashboardService.GetDashboardDataAsync(userId, myTasksOnly);
         return Ok(dashboard);
     }
 }

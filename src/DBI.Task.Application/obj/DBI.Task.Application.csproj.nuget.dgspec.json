@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj": {}
+    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj": {
+    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj",
+        "projectUniqueName": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj",
         "projectName": "DBI.Task.Application",
-        "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj",
+        "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\DBI.Task.Application.csproj",
         "packagesPath": "C:\\Users\\ducbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\obj\\",
+        "outputPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,11 +33,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
-                "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
+              "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
+                "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
               },
-              "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj"
+              "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
+                "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj"
               }
             }
           }
@@ -83,18 +83,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
+    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
+        "projectUniqueName": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
         "projectName": "DBI.Task.Domain",
-        "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
+        "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
         "packagesPath": "C:\\Users\\ducbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\obj\\",
+        "outputPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -133,6 +133,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.28.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -149,18 +155,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
+    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
+        "projectUniqueName": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
         "projectName": "DBI.Task.Infrastructure",
-        "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
+        "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\ducbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\obj\\",
+        "outputPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -182,8 +188,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
-                "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
+              "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
+                "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
               }
             }
           }
@@ -204,23 +210,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
             "Microsoft.Extensions.Hosting.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.28.0, )"
             }
           },
           "imports": [
@@ -239,7 +239,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

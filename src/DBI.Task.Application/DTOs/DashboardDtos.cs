@@ -17,7 +17,7 @@ public class DashboardDto
 
 public class ProjectProgressDto
 {
-    public int ProjectId { get; set; }
+    public string ProjectId { get; set; } = string.Empty;
     public string ProjectName { get; set; } = string.Empty;
     public int TotalTasks { get; set; }
     public int CompletedTasks { get; set; }

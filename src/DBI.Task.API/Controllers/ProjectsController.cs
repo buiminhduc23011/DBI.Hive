@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using DBI.Task.Infrastructure.Data;
 using DBI.Task.Infrastructure.Repositories;
 using DBI.Task.Domain.Entities;
@@ -14,10 +14,10 @@ namespace DBI.Task.API.Controllers;
 [Route("api/[controller]")]
 public class ProjectsController : ControllerBase
 {
-    private readonly DBITaskDbContext _context;
+    private readonly IMongoDbContext _context;
     private readonly IRepository<Project> _projectRepository;
 
-    public ProjectsController(DBITaskDbContext context, IRepository<Project> projectRepository)
+    public ProjectsController(IMongoDbContext context, IRepository<Project> projectRepository)
     {
         _context = context;
         _projectRepository = projectRepository;
@@ -26,13 +26,29 @@ public class ProjectsController : ControllerBase
     [HttpGet]
     public async System.Threading.Tasks.Task<IActionResult> GetProjects([FromQuery] bool includeArchived = false)
     {
-        var query = _context.Projects.AsQueryable();
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
         
-        if (!includeArchived)
-            query = query.Where(p => !p.IsArchived);
+        var filterBuilder = Builders<Project>.Filter;
+        var userFilter = filterBuilder.Or(
+            filterBuilder.Eq(p => p.OwnerId, userId),
+            filterBuilder.AnyEq(p => p.MemberIds, userId),
+            filterBuilder.Eq(p => p.OwnerId, "") // Include legacy projects without owner
+        );
+        
+        var filter = includeArchived 
+            ? userFilter
+            : filterBuilder.And(userFilter, filterBuilder.Eq(p => p.IsArchived, false));
 
-        var projects = await query
-            .Select(p => new ProjectDto
+        var projects = await _context.Projects.Find(filter).ToListAsync();
+        
+        var projectDtos = new List<ProjectDto>();
+        foreach (var p in projects)
+        {
+            var taskCount = await _context.Tasks.CountDocumentsAsync(t => t.ProjectId == p.Id);
+            var completedCount = await _context.Tasks.CountDocumentsAsync(
+                t => t.ProjectId == p.Id && t.Status == Domain.Enums.TaskItemStatus.Done);
+
+            projectDtos.Add(new ProjectDto
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -41,23 +57,26 @@ public class ProjectsController : ControllerBase
                 CreatedAt = p.CreatedAt,
                 UpdatedAt = p.UpdatedAt,
                 IsArchived = p.IsArchived,
-                TaskCount = p.Tasks.Count,
-                CompletedTaskCount = p.Tasks.Count(t => t.Status == Domain.Enums.TaskItemStatus.Done)
-            })
-            .ToListAsync();
+                TaskCount = (int)taskCount,
+                CompletedTaskCount = (int)completedCount,
+                OwnerId = p.OwnerId,
+                MemberIds = p.MemberIds
+            });
+        }
 
-        return Ok(projects);
+        return Ok(projectDtos);
     }
 
     [HttpGet("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> GetProject(int id)
+    public async System.Threading.Tasks.Task<IActionResult> GetProject(string id)
     {
-        var project = await _context.Projects
-            .Include(p => p.Tasks)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
+        var project = await _projectRepository.GetByIdAsync(id);
         if (project == null)
             return NotFound();
+
+        var taskCount = await _context.Tasks.CountDocumentsAsync(t => t.ProjectId == id);
+        var completedCount = await _context.Tasks.CountDocumentsAsync(
+            t => t.ProjectId == id && t.Status == Domain.Enums.TaskItemStatus.Done);
 
         var dto = new ProjectDto
         {
@@ -68,8 +87,10 @@ public class ProjectsController : ControllerBase
             CreatedAt = project.CreatedAt,
             UpdatedAt = project.UpdatedAt,
             IsArchived = project.IsArchived,
-            TaskCount = project.Tasks.Count,
-            CompletedTaskCount = project.Tasks.Count(t => t.Status == Domain.Enums.TaskItemStatus.Done)
+            TaskCount = (int)taskCount,
+            CompletedTaskCount = (int)completedCount,
+            OwnerId = project.OwnerId,
+            MemberIds = project.MemberIds
         };
 
         return Ok(dto);
@@ -78,18 +99,21 @@ public class ProjectsController : ControllerBase
     [HttpPost]
     public async System.Threading.Tasks.Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        
         var project = new Project
         {
             Name = request.Name,
             Description = request.Description,
             Color = request.Color ?? "#1e40af",
+            OwnerId = userId,
+            MemberIds = new List<string>(),
             CreatedAt = DateTime.UtcNow
         };
 
         project = await _projectRepository.AddAsync(project);
 
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        await _context.ActivityLogs.AddAsync(new ActivityLog
+        var activityLog = new ActivityLog
         {
             Action = "created",
             EntityType = "Project",
@@ -97,14 +121,14 @@ public class ProjectsController : ControllerBase
             Description = $"Created project: {project.Name}",
             UserId = userId,
             CreatedAt = DateTime.UtcNow
-        });
-        await _context.SaveChangesAsync();
+        };
+        await _context.ActivityLogs.InsertOneAsync(activityLog);
 
         return CreatedAtAction(nameof(GetProject), new { id = project.Id }, project);
     }
 
     [HttpPut("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectRequest request)
+    public async System.Threading.Tasks.Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectRequest request)
     {
         var project = await _projectRepository.GetByIdAsync(id);
         if (project == null)
@@ -126,13 +150,70 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> DeleteProject(int id)
+    public async System.Threading.Tasks.Task<IActionResult> DeleteProject(string id)
     {
         var project = await _projectRepository.GetByIdAsync(id);
         if (project == null)
             return NotFound();
 
-        await _projectRepository.DeleteAsync(project);
+        // Delete all related tasks, sprints, etc.
+        await _context.Tasks.DeleteManyAsync(t => t.ProjectId == id);
+        await _context.Sprints.DeleteManyAsync(s => s.ProjectId == id);
+        
+        await _projectRepository.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpPost("{id}/members")]
+    public async System.Threading.Tasks.Task<IActionResult> AddMember(string id, [FromBody] AddMemberRequest request)
+    {
+        var project = await _projectRepository.GetByIdAsync(id);
+        if (project == null)
+            return NotFound();
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        if (project.OwnerId != userId)
+            return Forbid();
+
+        // Find user by email
+        var user = await _context.Users.Find(u => u.Email == request.Email).FirstOrDefaultAsync();
+        if (user == null)
+            return BadRequest(new { message = "User not found with this email" });
+
+        if (!project.MemberIds.Contains(user.Id))
+        {
+            project.MemberIds.Add(user.Id);
+            project.MemberRoles[user.Id] = request.Role;
+            project.UpdatedAt = DateTime.UtcNow;
+            await _projectRepository.UpdateAsync(project);
+        }
+        else
+        {
+            // Update role if member already exists
+            project.MemberRoles[user.Id] = request.Role;
+            project.UpdatedAt = DateTime.UtcNow;
+            await _projectRepository.UpdateAsync(project);
+        }
+
+        return Ok(project);
+    }
+
+    [HttpDelete("{id}/members/{memberId}")]
+    public async System.Threading.Tasks.Task<IActionResult> RemoveMember(string id, string memberId)
+    {
+        var project = await _projectRepository.GetByIdAsync(id);
+        if (project == null)
+            return NotFound();
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        if (project.OwnerId != userId)
+            return Forbid();
+
+        project.MemberIds.Remove(memberId);
+        project.MemberRoles.Remove(memberId);
+        project.UpdatedAt = DateTime.UtcNow;
+        await _projectRepository.UpdateAsync(project);
+
+        return Ok(project);
     }
 }

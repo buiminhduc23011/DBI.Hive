@@ -1,30 +1,55 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using DBI.Task.Domain.Enums;
 
 namespace DBI.Task.Domain.Entities;
 
-public class TaskItem
+public class TaskItem : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("title")]
     public string Title { get; set; } = string.Empty;
+
+    [BsonElement("description")]
     public string? Description { get; set; }
+
+    [BsonElement("status")]
+    [BsonRepresentation(BsonType.String)]
     public TaskItemStatus Status { get; set; } = TaskItemStatus.Todo;
+
+    [BsonElement("priority")]
+    [BsonRepresentation(BsonType.String)]
     public Priority Priority { get; set; } = Priority.Medium;
-    
-    public int ProjectId { get; set; }
-    public int? SprintId { get; set; }
-    public int? AssignedToId { get; set; }
-    
+
+    [BsonElement("projectId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string ProjectId { get; set; } = string.Empty;
+
+    [BsonElement("sprintId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? SprintId { get; set; }
+
+    [BsonElement("assignedToId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? AssignedToId { get; set; }
+
+    [BsonElement("deadline")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? Deadline { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
+
+    [BsonElement("completedAt")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? CompletedAt { get; set; }
-    
-    public int OrderIndex { get; set; } // For Kanban board ordering
-    
-    // Navigation properties
-    public Project Project { get; set; } = null!;
-    public Sprint? Sprint { get; set; }
-    public User? AssignedTo { get; set; }
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+
+    [BsonElement("orderIndex")]
+    public int OrderIndex { get; set; }
+
+    // Denormalized fields for faster queries
+    [BsonElement("projectName")]
+    public string? ProjectName { get; set; }
+
+    [BsonElement("sprintName")]
+    public string? SprintName { get; set; }
+
+    [BsonElement("assignedToName")]
+    public string? AssignedToName { get; set; }
 }

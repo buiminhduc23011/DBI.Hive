@@ -1,22 +1,20 @@
 version: '3.8'
 
 services:
-  # SQL Server Database
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: dbi-task-db
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: dbi-task-mongodb
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${DB_PASSWORD:-YourStrong@Passw0rd}
-      - MSSQL_PID=Express
+      - MONGO_INITDB_DATABASE=DBITaskDB
     ports:
-      - "1433:1433"
+      - "27017:27017"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - mongodb-data:/data/db
     networks:
       - dbi-network
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${DB_PASSWORD:-YourStrong@Passw0rd}" -Q "SELECT 1"
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 3s
       retries: 10
@@ -30,7 +28,8 @@ services:
     container_name: dbi-task-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=DBITaskDB;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=True;
+      - MongoDB__ConnectionString=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=DBITaskDB
       - Jwt__Secret=${JWT_SECRET:-DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security}
       - Jwt__Issuer=DBI.Task.API
       - Jwt__Audience=DBI.Task.Client
@@ -45,7 +44,7 @@ services:
     ports:
       - "5000:80"
     depends_on:
-      db:
+      mongodb:
         condition: service_healthy
     networks:
       - dbi-network
@@ -66,7 +65,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  mssql-data:
+  mongodb-data:
     driver: local
 
 networks:

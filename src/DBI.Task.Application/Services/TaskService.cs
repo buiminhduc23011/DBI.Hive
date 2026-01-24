@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using DBI.Task.Infrastructure.Data;
 using DBI.Task.Infrastructure.Repositories;
 using DBI.Task.Domain.Entities;
@@ -8,140 +8,189 @@ namespace DBI.Task.Application.Services;
 
 public interface ITaskService
 {
-    System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter);
-    System.Threading.Tasks.Task<TaskDto?> GetTaskByIdAsync(int id);
-    System.Threading.Tasks.Task<TaskDto> CreateTaskAsync(CreateTaskRequest request, int userId);
-    System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(int id, UpdateTaskRequest request, int userId);
-    System.Threading.Tasks.Task<bool> DeleteTaskAsync(int id);
-    System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(int? projectId = null);
+    System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter, string userId);
+    System.Threading.Tasks.Task<TaskDto?> GetTaskByIdAsync(string id);
+    System.Threading.Tasks.Task<TaskDto> CreateTaskAsync(CreateTaskRequest request, string userId);
+    System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(string id, UpdateTaskRequest request, string userId);
+    System.Threading.Tasks.Task<bool> DeleteTaskAsync(string id);
+    System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(string? projectId, string userId);
 }
 
 public class TaskService : ITaskService
 {
-    private readonly DBITaskDbContext _context;
+    private readonly IMongoDbContext _context;
     private readonly IRepository<TaskItem> _taskRepository;
+    private readonly IRepository<User> _userRepository;
+    private readonly IRepository<Project> _projectRepository;
+    private readonly IRepository<Sprint> _sprintRepository;
 
-    public TaskService(DBITaskDbContext context, IRepository<TaskItem> taskRepository)
+    public TaskService(
+        IMongoDbContext context, 
+        IRepository<TaskItem> taskRepository,
+        IRepository<User> userRepository,
+        IRepository<Project> projectRepository,
+        IRepository<Sprint> sprintRepository)
     {
         _context = context;
         _taskRepository = taskRepository;
+        _userRepository = userRepository;
+        _projectRepository = projectRepository;
+        _sprintRepository = sprintRepository;
     }
 
-    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter)
+    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter, string userId)
     {
-        var query = _context.Tasks
-            .Include(t => t.Project)
-            .Include(t => t.Sprint)
-            .Include(t => t.AssignedTo)
-            .AsQueryable();
+        // Get user's active (non-archived) projects (owner or member)
+        var projectFilter = Builders<Project>.Filter.And(
+            Builders<Project>.Filter.Eq(p => p.IsArchived, false),
+            Builders<Project>.Filter.Or(
+                Builders<Project>.Filter.Eq(p => p.OwnerId, userId),
+                Builders<Project>.Filter.AnyEq(p => p.MemberIds, userId),
+                Builders<Project>.Filter.Eq(p => p.OwnerId, "") // Legacy projects without owner
+            )
+        );
+        var userProjects = await _context.Projects.Find(projectFilter).ToListAsync();
+        var userProjectIds = userProjects.Select(p => p.Id).ToList();
 
-        if (filter.ProjectId.HasValue)
-            query = query.Where(t => t.ProjectId == filter.ProjectId.Value);
+        var filterBuilder = Builders<TaskItem>.Filter;
+        var filters = new List<FilterDefinition<TaskItem>>();
 
-        if (filter.SprintId.HasValue)
-            query = query.Where(t => t.SprintId == filter.SprintId.Value);
+        // Filter by user's projects
+        filters.Add(filterBuilder.In(t => t.ProjectId, userProjectIds));
 
-        if (filter.AssignedToId.HasValue)
-            query = query.Where(t => t.AssignedToId == filter.AssignedToId.Value);
+        if (!string.IsNullOrEmpty(filter.ProjectId))
+            filters.Add(filterBuilder.Eq(t => t.ProjectId, filter.ProjectId));
+
+        if (!string.IsNullOrEmpty(filter.SprintId))
+            filters.Add(filterBuilder.Eq(t => t.SprintId, filter.SprintId));
+
+        if (!string.IsNullOrEmpty(filter.AssignedToId))
+            filters.Add(filterBuilder.Eq(t => t.AssignedToId, filter.AssignedToId));
 
         if (filter.Status.HasValue)
-            query = query.Where(t => t.Status == filter.Status.Value);
+            filters.Add(filterBuilder.Eq(t => t.Status, filter.Status.Value));
 
         if (filter.Priority.HasValue)
-            query = query.Where(t => t.Priority == filter.Priority.Value);
+            filters.Add(filterBuilder.Eq(t => t.Priority, filter.Priority.Value));
 
         if (filter.DeadlineFrom.HasValue)
-            query = query.Where(t => t.Deadline >= filter.DeadlineFrom.Value);
+            filters.Add(filterBuilder.Gte(t => t.Deadline, filter.DeadlineFrom.Value));
 
         if (filter.DeadlineTo.HasValue)
-            query = query.Where(t => t.Deadline <= filter.DeadlineTo.Value);
+            filters.Add(filterBuilder.Lte(t => t.Deadline, filter.DeadlineTo.Value));
 
         if (!string.IsNullOrWhiteSpace(filter.SearchText))
-            query = query.Where(t => t.Title.Contains(filter.SearchText) || 
-                                   (t.Description != null && t.Description.Contains(filter.SearchText)));
+        {
+            var searchFilter = filterBuilder.Or(
+                filterBuilder.Regex(t => t.Title, new MongoDB.Bson.BsonRegularExpression(filter.SearchText, "i")),
+                filterBuilder.Regex(t => t.Description, new MongoDB.Bson.BsonRegularExpression(filter.SearchText, "i"))
+            );
+            filters.Add(searchFilter);
+        }
 
         if (!filter.IncludeBacklog)
-            query = query.Where(t => t.Status != Domain.Enums.TaskItemStatus.Backlog);
+            filters.Add(filterBuilder.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Backlog));
 
-        var tasks = await query.OrderBy(t => t.OrderIndex).ToListAsync();
-        return tasks.Select(MapToDto);
+        var combinedFilter = filters.Any() 
+            ? filterBuilder.And(filters) 
+            : filterBuilder.Empty;
+
+        var tasks = await _context.Tasks
+            .Find(combinedFilter)
+            .SortBy(t => t.OrderIndex)
+            .ToListAsync();
+
+        return tasks.Select(t => MapToDto(t)).ToList();
     }
 
-    public async System.Threading.Tasks.Task<TaskDto?> GetTaskByIdAsync(int id)
+    public async System.Threading.Tasks.Task<TaskDto?> GetTaskByIdAsync(string id)
     {
-        var task = await _context.Tasks
-            .Include(t => t.Project)
-            .Include(t => t.Sprint)
-            .Include(t => t.AssignedTo)
-            .Include(t => t.Comments)
-            .Include(t => t.Attachments)
-            .FirstOrDefaultAsync(t => t.Id == id);
+        var task = await _taskRepository.GetByIdAsync(id);
+        if (task == null) return null;
 
-        return task == null ? null : MapToDto(task);
+        // Get comment and attachment counts
+        var commentCount = await _context.Comments.CountDocumentsAsync(c => c.TaskId == id);
+        var attachmentCount = await _context.Attachments.CountDocumentsAsync(a => a.TaskId == id);
+
+        return MapToDto(task, (int)commentCount, (int)attachmentCount);
     }
 
-    public async System.Threading.Tasks.Task<TaskDto> CreateTaskAsync(CreateTaskRequest request, int userId)
+    public async System.Threading.Tasks.Task<TaskDto> CreateTaskAsync(CreateTaskRequest request, string userId)
     {
+        // Get max order index
         var maxOrder = await _context.Tasks
-            .Where(t => t.ProjectId == request.ProjectId && t.Status == Domain.Enums.TaskItemStatus.Todo)
-            .MaxAsync(t => (int?)t.OrderIndex) ?? 0;
+            .Find(t => t.ProjectId == request.ProjectId && t.Status == Domain.Enums.TaskItemStatus.Todo)
+            .SortByDescending(t => t.OrderIndex)
+            .Limit(1)
+            .FirstOrDefaultAsync();
+        
+        var nextOrder = (maxOrder?.OrderIndex ?? 0) + 1;
+
+        // Get related entities for denormalization
+        var project = await _projectRepository.GetByIdAsync(request.ProjectId);
+        Sprint? sprint = null;
+        User? assignee = null;
+
+        if (!string.IsNullOrEmpty(request.SprintId))
+            sprint = await _sprintRepository.GetByIdAsync(request.SprintId);
+        
+        if (!string.IsNullOrEmpty(request.AssignedToId))
+            assignee = await _userRepository.GetByIdAsync(request.AssignedToId);
 
         var task = new TaskItem
         {
             Title = request.Title,
             Description = request.Description,
             ProjectId = request.ProjectId,
+            ProjectName = project?.Name,
             SprintId = request.SprintId,
+            SprintName = sprint?.Name,
             AssignedToId = request.AssignedToId,
+            AssignedToName = assignee?.FullName,
             Priority = request.Priority,
             Deadline = request.Deadline,
-            Status = Domain.Enums.TaskItemStatus.Todo,
-            OrderIndex = maxOrder + 1,
+            Status = request.Status ?? Domain.Enums.TaskItemStatus.Todo,
+            OrderIndex = nextOrder,
             CreatedAt = DateTime.UtcNow
         };
 
         task = await _taskRepository.AddAsync(task);
 
         // Create activity log
-        await _context.ActivityLogs.AddAsync(new ActivityLog
+        var currentUser = await _userRepository.GetByIdAsync(userId);
+        var activityLog = new ActivityLog
         {
             Action = "created",
             EntityType = "Task",
             EntityId = task.Id,
             Description = $"Created task: {task.Title}",
             UserId = userId,
+            UserName = currentUser?.FullName,
             CreatedAt = DateTime.UtcNow
-        });
+        };
+        await _context.ActivityLogs.InsertOneAsync(activityLog);
 
         // Create notification if assigned to someone
-        if (task.AssignedToId.HasValue)
+        if (!string.IsNullOrEmpty(task.AssignedToId) && task.AssignedToId != userId)
         {
-            var assignedUser = await _context.Users.FindAsync(task.AssignedToId.Value);
-            var creator = await _context.Users.FindAsync(userId);
-            
-            if (assignedUser != null && creator != null)
+            var notification = new Notification
             {
-                await _context.Notifications.AddAsync(new Notification
-                {
-                    Title = "New Task Assigned",
-                    Message = $"{creator.FullName} assigned you a task: {task.Title}",
-                    UserId = task.AssignedToId.Value,
-                    TaskId = task.Id,
-                    CreatedAt = DateTime.UtcNow
-                });
-            }
+                Title = "New Task Assigned",
+                Message = $"{currentUser?.FullName ?? "Someone"} assigned you a task: {task.Title}",
+                UserId = task.AssignedToId,
+                TaskId = task.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _context.Notifications.InsertOneAsync(notification);
         }
 
-        await _context.SaveChangesAsync();
-
-        return (await GetTaskByIdAsync(task.Id))!;
+        return MapToDto(task);
     }
 
-    public async System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(int id, UpdateTaskRequest request, int userId)
+    public async System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(string id, UpdateTaskRequest request, string userId)
     {
-        var task = await _context.Tasks.FindAsync(id);
-        if (task == null)
-            return null;
+        var task = await _taskRepository.GetByIdAsync(id);
+        if (task == null) return null;
 
         var changes = new List<string>();
 
@@ -171,15 +220,19 @@ public class TaskService : ITaskService
             task.Priority = request.Priority.Value;
         }
 
-        if (request.SprintId.HasValue && task.SprintId != request.SprintId.Value)
+        if (request.SprintId != null && task.SprintId != request.SprintId)
         {
-            task.SprintId = request.SprintId.Value;
+            task.SprintId = request.SprintId;
+            var sprint = await _sprintRepository.GetByIdAsync(request.SprintId);
+            task.SprintName = sprint?.Name;
             changes.Add("sprint changed");
         }
 
-        if (request.AssignedToId.HasValue && task.AssignedToId != request.AssignedToId.Value)
+        if (request.AssignedToId != null && task.AssignedToId != request.AssignedToId)
         {
-            task.AssignedToId = request.AssignedToId.Value;
+            task.AssignedToId = request.AssignedToId;
+            var assignee = await _userRepository.GetByIdAsync(request.AssignedToId);
+            task.AssignedToName = assignee?.FullName;
             changes.Add("assignee changed");
         }
 
@@ -199,46 +252,67 @@ public class TaskService : ITaskService
 
         if (changes.Any())
         {
-            await _context.ActivityLogs.AddAsync(new ActivityLog
+            var currentUser = await _userRepository.GetByIdAsync(userId);
+            var activityLog = new ActivityLog
             {
                 Action = "updated",
                 EntityType = "Task",
                 EntityId = task.Id,
                 Description = $"Updated task '{task.Title}': {string.Join(", ", changes)}",
                 UserId = userId,
+                UserName = currentUser?.FullName,
                 CreatedAt = DateTime.UtcNow
-            });
-            await _context.SaveChangesAsync();
+            };
+            await _context.ActivityLogs.InsertOneAsync(activityLog);
         }
 
         return await GetTaskByIdAsync(id);
     }
 
-    public async System.Threading.Tasks.Task<bool> DeleteTaskAsync(int id)
+    public async System.Threading.Tasks.Task<bool> DeleteTaskAsync(string id)
     {
         var task = await _taskRepository.GetByIdAsync(id);
-        if (task == null)
-            return false;
+        if (task == null) return false;
 
-        await _taskRepository.DeleteAsync(task);
+        // Delete related comments and attachments
+        await _context.Comments.DeleteManyAsync(c => c.TaskId == id);
+        await _context.Attachments.DeleteManyAsync(a => a.TaskId == id);
+        
+        await _taskRepository.DeleteAsync(id);
         return true;
     }
 
-    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(int? projectId = null)
+    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(string? projectId, string userId)
     {
-        var query = _context.Tasks
-            .Include(t => t.Project)
-            .Include(t => t.AssignedTo)
-            .Where(t => t.Status == Domain.Enums.TaskItemStatus.Backlog);
+        // Get user's active (non-archived) projects (owner or member)
+        var projectFilter = Builders<Project>.Filter.And(
+            Builders<Project>.Filter.Eq(p => p.IsArchived, false),
+            Builders<Project>.Filter.Or(
+                Builders<Project>.Filter.Eq(p => p.OwnerId, userId),
+                Builders<Project>.Filter.AnyEq(p => p.MemberIds, userId),
+                Builders<Project>.Filter.Eq(p => p.OwnerId, "") // Legacy projects without owner
+            )
+        );
+        var userProjects = await _context.Projects.Find(projectFilter).ToListAsync();
+        var userProjectIds = userProjects.Select(p => p.Id).ToList();
 
-        if (projectId.HasValue)
-            query = query.Where(t => t.ProjectId == projectId.Value);
+        var filter = Builders<TaskItem>.Filter.And(
+            Builders<TaskItem>.Filter.Eq(t => t.Status, Domain.Enums.TaskItemStatus.Backlog),
+            Builders<TaskItem>.Filter.In(t => t.ProjectId, userProjectIds)
+        );
+        
+        if (!string.IsNullOrEmpty(projectId))
+            filter = filter & Builders<TaskItem>.Filter.Eq(t => t.ProjectId, projectId);
 
-        var tasks = await query.OrderBy(t => t.CreatedAt).ToListAsync();
-        return tasks.Select(MapToDto);
+        var tasks = await _context.Tasks
+            .Find(filter)
+            .SortBy(t => t.CreatedAt)
+            .ToListAsync();
+
+        return tasks.Select(t => MapToDto(t)).ToList();
     }
 
-    private TaskDto MapToDto(TaskItem task)
+    private TaskDto MapToDto(TaskItem task, int? commentCount = null, int? attachmentCount = null)
     {
         return new TaskDto
         {
@@ -248,18 +322,18 @@ public class TaskService : ITaskService
             Status = task.Status,
             Priority = task.Priority,
             ProjectId = task.ProjectId,
-            ProjectName = task.Project?.Name ?? "",
+            ProjectName = task.ProjectName ?? "",
             SprintId = task.SprintId,
-            SprintName = task.Sprint?.Name,
+            SprintName = task.SprintName,
             AssignedToId = task.AssignedToId,
-            AssignedToName = task.AssignedTo?.FullName,
+            AssignedToName = task.AssignedToName,
             Deadline = task.Deadline,
             CreatedAt = task.CreatedAt,
             UpdatedAt = task.UpdatedAt,
             CompletedAt = task.CompletedAt,
             OrderIndex = task.OrderIndex,
-            CommentCount = task.Comments?.Count ?? 0,
-            AttachmentCount = task.Attachments?.Count ?? 0
+            CommentCount = commentCount ?? 0,
+            AttachmentCount = attachmentCount ?? 0
         };
     }
 }
