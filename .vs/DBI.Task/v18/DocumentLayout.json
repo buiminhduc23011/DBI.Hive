@@ -54,8 +54,7 @@
               "RelativeToolTip": "src\\DBI.Task.API\\Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-01-24T09:30:15.387Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-24T09:30:15.387Z"
             },
             {
               "$type": "Document",
@@ -67,8 +66,7 @@
               "RelativeToolTip": "src\\DBI.Task.API\\Dockerfile",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-01-24T09:30:12.72Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-24T09:30:12.72Z"
             },
             {
               "$type": "Document",
@@ -80,8 +78,7 @@
               "RelativeToolTip": "src\\DBI.Task.Application\\Services\\AuthService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-24T09:30:05.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-24T09:30:05.149Z"
             },
             {
               "$type": "Document",
@@ -91,7 +88,7 @@
               "RelativeDocumentMoniker": "src\\DBI.Task.API\\Program.cs",
               "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\Program.cs",
               "RelativeToolTip": "src\\DBI.Task.API\\Program.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAcwKsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAcwIcAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-24T09:29:55.618Z",
               "EditorCaption": ""
@@ -105,8 +102,7 @@
               "ToolTip": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\DBI.Task.API.csproj",
               "RelativeToolTip": "src\\DBI.Task.API\\DBI.Task.API.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-01T03:15:10.673Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T03:15:10.673Z"
             },
             {
               "$type": "Document",
@@ -118,8 +114,7 @@
               "RelativeToolTip": "src\\DBI.Task.API\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-01T02:55:18.222Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T02:55:18.222Z"
             }
           ]
         }

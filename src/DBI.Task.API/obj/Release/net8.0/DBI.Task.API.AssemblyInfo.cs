@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DBI.Task.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d3c25716a01909113eec3afcd3b38bc549c768d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+edae46d0972fc657aaa83a2a7680ca81c548d1f8")]
 [assembly: System.Reflection.AssemblyProductAttribute("DBI.Task.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DBI.Task.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
