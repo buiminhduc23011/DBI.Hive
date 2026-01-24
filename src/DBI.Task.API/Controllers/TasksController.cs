@@ -21,12 +21,13 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async System.Threading.Tasks.Task<IActionResult> GetTasks([FromQuery] TaskFilterRequest filter)
     {
-        var tasks = await _taskService.GetTasksAsync(filter);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        var tasks = await _taskService.GetTasksAsync(filter, userId);
         return Ok(tasks);
     }
 
     [HttpGet("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> GetTask(int id)
+    public async System.Threading.Tasks.Task<IActionResult> GetTask(string id)
     {
         var task = await _taskService.GetTaskByIdAsync(id);
         if (task == null)
@@ -36,24 +37,25 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet("backlog")]
-    public async System.Threading.Tasks.Task<IActionResult> GetBacklogTasks([FromQuery] int? projectId = null)
+    public async System.Threading.Tasks.Task<IActionResult> GetBacklogTasks([FromQuery] string? projectId = null)
     {
-        var tasks = await _taskService.GetBacklogTasksAsync(projectId);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        var tasks = await _taskService.GetBacklogTasksAsync(projectId, userId);
         return Ok(tasks);
     }
 
     [HttpPost]
     public async System.Threading.Tasks.Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
         var task = await _taskService.CreateTaskAsync(request, userId);
         return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
     }
 
     [HttpPut("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> UpdateTask(int id, [FromBody] UpdateTaskRequest request)
+    public async System.Threading.Tasks.Task<IActionResult> UpdateTask(string id, [FromBody] UpdateTaskRequest request)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
         var task = await _taskService.UpdateTaskAsync(id, request, userId);
         
         if (task == null)
@@ -63,7 +65,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> DeleteTask(int id)
+    public async System.Threading.Tasks.Task<IActionResult> DeleteTask(string id)
     {
         var result = await _taskService.DeleteTaskAsync(id);
         if (!result)

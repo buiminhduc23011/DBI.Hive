@@ -1,15 +1,27 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace DBI.Task.Domain.Entities;
 
-public class ActivityLog
+public class ActivityLog : BaseEntity
 {
-    public int Id { get; set; }
-    public string Action { get; set; } = string.Empty; // e.g., "created", "updated", "deleted", "moved"
-    public string EntityType { get; set; } = string.Empty; // e.g., "Task", "Project", "Comment"
-    public int EntityId { get; set; }
+    [BsonElement("action")]
+    public string Action { get; set; } = string.Empty;
+
+    [BsonElement("entityType")]
+    public string EntityType { get; set; } = string.Empty;
+
+    [BsonElement("entityId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string EntityId { get; set; } = string.Empty;
+
+    [BsonElement("description")]
     public string? Description { get; set; }
-    public int UserId { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    // Navigation properties
-    public User User { get; set; } = null!;
+
+    [BsonElement("userId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string UserId { get; set; } = string.Empty;
+
+    [BsonElement("userName")]
+    public string? UserName { get; set; }
 }

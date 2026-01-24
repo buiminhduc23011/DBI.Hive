@@ -1,15 +1,24 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace DBI.Task.Domain.Entities;
 
-public class Comment
+public class Comment : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("content")]
     public string Content { get; set; } = string.Empty;
-    public int TaskId { get; set; }
-    public int UserId { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
-    
-    // Navigation properties
-    public TaskItem Task { get; set; } = null!;
-    public User User { get; set; } = null!;
+
+    [BsonElement("taskId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string TaskId { get; set; } = string.Empty;
+
+    [BsonElement("userId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string UserId { get; set; } = string.Empty;
+
+    [BsonElement("userName")]
+    public string? UserName { get; set; }
+
+    [BsonElement("userAvatarUrl")]
+    public string? UserAvatarUrl { get; set; }
 }

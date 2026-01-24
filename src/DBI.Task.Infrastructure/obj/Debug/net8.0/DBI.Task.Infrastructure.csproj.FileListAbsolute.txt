@@ -5,7 +5,6 @@ C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\n
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\DBI.Task.Infrastructure.csproj.CoreCompileInputs.cache
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\DBI.Task.Infrastructure.sourcelink.json
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\bin\Debug\net8.0\DBI.Task.Infrastructure.deps.json
-C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\bin\Debug\net8.0\DBI.Task.Infrastructure.runtimeconfig.json
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\bin\Debug\net8.0\DBI.Task.Infrastructure.dll
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\bin\Debug\net8.0\DBI.Task.Infrastructure.pdb
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\bin\Debug\net8.0\DBI.Task.Domain.dll
@@ -14,5 +13,4 @@ C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\n
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\DBI.Task.Infrastructure.dll
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\refint\DBI.Task.Infrastructure.dll
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\DBI.Task.Infrastructure.pdb
-C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\DBI.Task.Infrastructure.genruntimeconfig.cache
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Infrastructure\obj\Debug\net8.0\ref\DBI.Task.Infrastructure.dll

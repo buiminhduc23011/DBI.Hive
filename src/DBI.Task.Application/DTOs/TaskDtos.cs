@@ -4,16 +4,16 @@ namespace DBI.Task.Application.DTOs;
 
 public class TaskDto
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public TaskItemStatus Status { get; set; }
     public Priority Priority { get; set; }
-    public int ProjectId { get; set; }
+    public string ProjectId { get; set; } = string.Empty;
     public string ProjectName { get; set; } = string.Empty;
-    public int? SprintId { get; set; }
+    public string? SprintId { get; set; }
     public string? SprintName { get; set; }
-    public int? AssignedToId { get; set; }
+    public string? AssignedToId { get; set; }
     public string? AssignedToName { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -28,10 +28,11 @@ public class CreateTaskRequest
 {
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public int ProjectId { get; set; }
-    public int? SprintId { get; set; }
-    public int? AssignedToId { get; set; }
+    public string ProjectId { get; set; } = string.Empty;
+    public string? SprintId { get; set; }
+    public string? AssignedToId { get; set; }
     public Priority Priority { get; set; } = Priority.Medium;
+    public TaskItemStatus? Status { get; set; }
     public DateTime? Deadline { get; set; }
 }
 
@@ -41,17 +42,17 @@ public class UpdateTaskRequest
     public string? Description { get; set; }
     public TaskItemStatus? Status { get; set; }
     public Priority? Priority { get; set; }
-    public int? SprintId { get; set; }
-    public int? AssignedToId { get; set; }
+    public string? SprintId { get; set; }
+    public string? AssignedToId { get; set; }
     public DateTime? Deadline { get; set; }
     public int? OrderIndex { get; set; }
 }
 
 public class TaskFilterRequest
 {
-    public int? ProjectId { get; set; }
-    public int? SprintId { get; set; }
-    public int? AssignedToId { get; set; }
+    public string? ProjectId { get; set; }
+    public string? SprintId { get; set; }
+    public string? AssignedToId { get; set; }
     public TaskItemStatus? Status { get; set; }
     public Priority? Priority { get; set; }
     public DateTime? DeadlineFrom { get; set; }

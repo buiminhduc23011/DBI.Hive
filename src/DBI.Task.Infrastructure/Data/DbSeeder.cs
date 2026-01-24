@@ -1,15 +1,16 @@
+using System.Security.Cryptography;
+using System.Text;
+using MongoDB.Driver;
 using DBI.Task.Domain.Entities;
 using DBI.Task.Domain.Enums;
-using DBI.Task.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace DBI.Task.Infrastructure.Data;
 
 public class DbSeeder
 {
-    private readonly DBITaskDbContext _context;
+    private readonly IMongoDbContext _context;
 
-    public DbSeeder(DBITaskDbContext context)
+    public DbSeeder(IMongoDbContext context)
     {
         _context = context;
     }
@@ -17,10 +18,13 @@ public class DbSeeder
     public async System.Threading.Tasks.Task SeedAsync()
     {
         // Check if already seeded
-        if (await _context.Users.AnyAsync())
+        if (await _context.Users.Find(_ => true).AnyAsync())
         {
-            return; // Database already has data
+            Console.WriteLine("Database already seeded.");
+            return;
         }
+
+        Console.WriteLine("🌱 Seeding database...");
 
         // Create Admin User
         var adminUser = new User
@@ -33,8 +37,7 @@ public class DbSeeder
             AvatarUrl = null
         };
 
-        await _context.Users.AddAsync(adminUser);
-        await _context.SaveChangesAsync();
+        await _context.Users.InsertOneAsync(adminUser);
 
         // Create Demo User
         var demoUser = new User
@@ -46,8 +49,7 @@ public class DbSeeder
             CreatedAt = DateTime.UtcNow
         };
 
-        await _context.Users.AddAsync(demoUser);
-        await _context.SaveChangesAsync();
+        await _context.Users.InsertOneAsync(demoUser);
 
         // Create Sample Project
         var project1 = new Project
@@ -59,8 +61,7 @@ public class DbSeeder
             CreatedAt = DateTime.UtcNow
         };
 
-        await _context.Projects.AddAsync(project1);
-        await _context.SaveChangesAsync();
+        await _context.Projects.InsertOneAsync(project1);
 
         var project2 = new Project
         {
@@ -71,8 +72,7 @@ public class DbSeeder
             CreatedAt = DateTime.UtcNow
         };
 
-        await _context.Projects.AddAsync(project2);
-        await _context.SaveChangesAsync();
+        await _context.Projects.InsertOneAsync(project2);
 
         // Create Sprint
         var sprint1 = new Sprint
@@ -86,165 +86,192 @@ public class DbSeeder
             CreatedAt = DateTime.UtcNow
         };
 
-        await _context.Sprints.AddAsync(sprint1);
-        await _context.SaveChangesAsync();
+        await _context.Sprints.InsertOneAsync(sprint1);
 
         // Create Sample Tasks
-        var tasks = new List<Domain.Entities.TaskItem>
+        var tasks = new List<TaskItem>
         {
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
                 Title = "Setup Backend Infrastructure",
-                Description = "Configure ASP.NET Core, EF Core, and SQL Server",
+                Description = "Configure ASP.NET Core and MongoDB",
                 Status = TaskItemStatus.Done,
                 Priority = Priority.High,
                 ProjectId = project1.Id,
+                ProjectName = project1.Name,
                 SprintId = sprint1.Id,
+                SprintName = sprint1.Name,
                 AssignedToId = adminUser.Id,
+                AssignedToName = adminUser.FullName,
                 Deadline = DateTime.UtcNow.AddDays(-2),
                 CreatedAt = DateTime.UtcNow.AddDays(-5),
                 CompletedAt = DateTime.UtcNow.AddDays(-2),
                 OrderIndex = 1
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
                 Title = "Implement Authentication",
                 Description = "JWT authentication with refresh tokens",
                 Status = TaskItemStatus.Done,
                 Priority = Priority.Critical,
                 ProjectId = project1.Id,
+                ProjectName = project1.Name,
                 SprintId = sprint1.Id,
+                SprintName = sprint1.Name,
                 AssignedToId = adminUser.Id,
+                AssignedToName = adminUser.FullName,
                 Deadline = DateTime.UtcNow.AddDays(-1),
                 CreatedAt = DateTime.UtcNow.AddDays(-4),
                 CompletedAt = DateTime.UtcNow.AddDays(-1),
                 OrderIndex = 2
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
                 Title = "Create React Frontend",
                 Description = "Setup Vite + React + TypeScript + Tailwind CSS",
                 Status = TaskItemStatus.InProgress,
                 Priority = Priority.High,
                 ProjectId = project1.Id,
+                ProjectName = project1.Name,
                 SprintId = sprint1.Id,
+                SprintName = sprint1.Name,
                 AssignedToId = demoUser.Id,
+                AssignedToName = demoUser.FullName,
                 Deadline = DateTime.UtcNow.AddDays(2),
                 CreatedAt = DateTime.UtcNow.AddDays(-3),
                 OrderIndex = 3
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
                 Title = "Implement Kanban Board",
                 Description = "Drag & drop functionality with dnd-kit",
                 Status = TaskItemStatus.InProgress,
                 Priority = Priority.Medium,
                 ProjectId = project1.Id,
+                ProjectName = project1.Name,
                 SprintId = sprint1.Id,
+                SprintName = sprint1.Name,
                 AssignedToId = demoUser.Id,
+                AssignedToName = demoUser.FullName,
                 Deadline = DateTime.UtcNow.AddDays(3),
                 CreatedAt = DateTime.UtcNow.AddDays(-2),
                 OrderIndex = 4
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
-                Title = "Design Dashboard UI",
-                Description = "Create metrics, charts, and overview widgets",
-                Status = TaskItemStatus.Review,
+                Title = "Setup Dashboard",
+                Description = "Create dashboard with statistics and charts",
+                Status = TaskItemStatus.Todo,
                 Priority = Priority.Medium,
                 ProjectId = project1.Id,
+                ProjectName = project1.Name,
                 SprintId = sprint1.Id,
-                AssignedToId = adminUser.Id,
-                Deadline = DateTime.UtcNow.AddDays(1),
+                SprintName = sprint1.Name,
+                AssignedToId = null,
+                Deadline = DateTime.UtcNow.AddDays(5),
                 CreatedAt = DateTime.UtcNow.AddDays(-1),
                 OrderIndex = 5
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
-                Title = "Setup Email Notifications",
-                Description = "Configure SMTP and notification templates",
-                Status = TaskItemStatus.Todo,
+                Title = "Add Email Notifications",
+                Description = "SMTP setup for deadline reminders",
+                Status = TaskItemStatus.Backlog,
                 Priority = Priority.Low,
                 ProjectId = project1.Id,
-                SprintId = sprint1.Id,
+                ProjectName = project1.Name,
+                SprintId = null,
                 AssignedToId = null,
-                Deadline = DateTime.UtcNow.AddDays(5),
+                Deadline = DateTime.UtcNow.AddDays(10),
                 CreatedAt = DateTime.UtcNow,
                 OrderIndex = 6
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
-                Title = "Write API Documentation",
-                Description = "Document all endpoints with examples",
+                Title = "Mobile App UI Design",
+                Description = "Design screens for the mobile app",
                 Status = TaskItemStatus.Todo,
-                Priority = Priority.Medium,
-                ProjectId = project1.Id,
-                AssignedToId = null,
+                Priority = Priority.High,
+                ProjectId = project2.Id,
+                ProjectName = project2.Name,
+                SprintId = null,
+                AssignedToId = demoUser.Id,
+                AssignedToName = demoUser.FullName,
                 Deadline = DateTime.UtcNow.AddDays(7),
                 CreatedAt = DateTime.UtcNow,
-                OrderIndex = 7
+                OrderIndex = 1
             },
-            new Domain.Entities.TaskItem
+            new TaskItem
             {
-                Title = "Mobile App Design",
-                Description = "UI/UX design for React Native app",
+                Title = "API Integration",
+                Description = "Connect mobile app to backend API",
                 Status = TaskItemStatus.Backlog,
-                Priority = Priority.Low,
+                Priority = Priority.Medium,
                 ProjectId = project2.Id,
+                ProjectName = project2.Name,
+                SprintId = null,
                 AssignedToId = null,
                 Deadline = DateTime.UtcNow.AddDays(14),
                 CreatedAt = DateTime.UtcNow,
-                OrderIndex = 1
+                OrderIndex = 2
             }
         };
 
-        await _context.Tasks.AddRangeAsync(tasks);
-        await _context.SaveChangesAsync();
+        await _context.Tasks.InsertManyAsync(tasks);
 
-        // Add some comments
+        // Create sample comments
         var comment1 = new Comment
         {
-            Content = "Backend setup completed successfully! All tests passing.",
+            Content = "Great progress on this task!",
             TaskId = tasks[0].Id,
-            UserId = adminUser.Id,
-            CreatedAt = DateTime.UtcNow.AddDays(-2)
+            UserId = demoUser.Id,
+            UserName = demoUser.FullName,
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
         };
 
         var comment2 = new Comment
         {
-            Content = "Working on the Kanban drag & drop feature. Making good progress!",
-            TaskId = tasks[3].Id,
-            UserId = demoUser.Id,
-            CreatedAt = DateTime.UtcNow.AddHours(-3)
+            Content = "Need to add more test coverage.",
+            TaskId = tasks[1].Id,
+            UserId = adminUser.Id,
+            UserName = adminUser.FullName,
+            CreatedAt = DateTime.UtcNow.AddHours(-12)
         };
 
-        await _context.Comments.AddRangeAsync(comment1, comment2);
-        await _context.SaveChangesAsync();
+        await _context.Comments.InsertManyAsync(new[] { comment1, comment2 });
 
-        // Create welcome notification for demo user
-        var notification = new Notification
+        // Create sample notifications
+        var notification1 = new Notification
         {
-            Title = "Welcome to DBI Task!",
-            Message = "You've been added to the DBI Task Application project. Check out your assigned tasks!",
+            Title = "Task Assigned",
+            Message = "You have been assigned to 'Create React Frontend'",
             UserId = demoUser.Id,
-            TaskId = null,
+            TaskId = tasks[2].Id,
             IsRead = false,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow.AddDays(-3)
         };
 
-        await _context.Notifications.AddAsync(notification);
-        await _context.SaveChangesAsync();
+        var notification2 = new Notification
+        {
+            Title = "Deadline Reminder",
+            Message = "Task 'Implement Kanban Board' is due in 3 days",
+            UserId = demoUser.Id,
+            TaskId = tasks[3].Id,
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow.AddHours(-6)
+        };
+
+        await _context.Notifications.InsertManyAsync(new[] { notification1, notification2 });
 
         Console.WriteLine("✅ Database seeded successfully!");
         Console.WriteLine("📧 Admin: admin@dbi.com | Password: Admin@123");
         Console.WriteLine("📧 Demo: demo@dbi.com | Password: Demo@123");
     }
 
-    private string HashPassword(string password)
+    private static string HashPassword(string password)
     {
-        // Same hashing logic as AuthService (SHA256)
-        using var sha256 = System.Security.Cryptography.SHA256.Create();
-        var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        using var sha256 = SHA256.Create();
+        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
         return Convert.ToBase64String(hashedBytes);
     }
 }

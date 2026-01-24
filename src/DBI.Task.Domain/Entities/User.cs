@@ -1,22 +1,45 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using DBI.Task.Domain.Enums;
 
 namespace DBI.Task.Domain.Entities;
 
-public class User
+public class User : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("email")]
     public string Email { get; set; } = string.Empty;
+
+    [BsonElement("username")]
+    public string? Username { get; set; }
+
+    [BsonElement("passwordHash")]
     public string PasswordHash { get; set; } = string.Empty;
+
+    [BsonElement("fullName")]
     public string FullName { get; set; } = string.Empty;
+
+    [BsonElement("avatarUrl")]
     public string? AvatarUrl { get; set; }
+
+    [BsonElement("role")]
+    [BsonRepresentation(BsonType.String)]
     public UserRole Role { get; set; } = UserRole.Member;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    [BsonElement("lastLoginAt")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? LastLoginAt { get; set; }
+
+    [BsonElement("refreshToken")]
     public string? RefreshToken { get; set; }
+
+    [BsonElement("refreshTokenExpiryTime")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? RefreshTokenExpiryTime { get; set; }
-    
-    // Navigation properties
-    public ICollection<TaskItem> AssignedTasks { get; set; } = new List<TaskItem>();
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<ActivityLog> Activities { get; set; } = new List<ActivityLog>();
+
+    // User Preferences
+    [BsonElement("theme")]
+    public string Theme { get; set; } = "light"; // "light" or "dark"
+
+    [BsonElement("language")]
+    public string Language { get; set; } = "vi"; // "vi" or "en"
 }

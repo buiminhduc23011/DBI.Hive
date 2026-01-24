@@ -1,16 +1,27 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace DBI.Task.Domain.Entities;
 
-public class Notification
+public class Notification : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("title")]
     public string Title { get; set; } = string.Empty;
+
+    [BsonElement("message")]
     public string Message { get; set; } = string.Empty;
-    public int UserId { get; set; }
-    public int? TaskId { get; set; }
+
+    [BsonElement("type")]
+    public string Type { get; set; } = "general";
+
+    [BsonElement("userId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string UserId { get; set; } = string.Empty;
+
+    [BsonElement("taskId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? TaskId { get; set; }
+
+    [BsonElement("isRead")]
     public bool IsRead { get; set; } = false;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    // Navigation properties
-    public User User { get; set; } = null!;
-    public TaskItem? Task { get; set; }
 }

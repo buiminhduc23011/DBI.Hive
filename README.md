@@ -30,8 +30,8 @@ A modern, full-stack task management application for the DBI ecosystem, built wi
 
 ### Backend
 - **ASP.NET Core 8.0** - Web API framework
-- **Entity Framework Core** - ORM for database access
-- **SQL Server** - Database
+- **MongoDB** - NoSQL Database
+- **MongoDB.Driver** - Database driver
 - **JWT** - Authentication
 - **SMTP** - Email notifications
 

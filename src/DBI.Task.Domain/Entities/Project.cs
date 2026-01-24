@@ -1,16 +1,28 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace DBI.Task.Domain.Entities;
 
-public class Project
+public class Project : BaseEntity
 {
-    public int Id { get; set; }
+    [BsonElement("name")]
     public string Name { get; set; } = string.Empty;
+
+    [BsonElement("description")]
     public string? Description { get; set; }
-    public string? Color { get; set; } // For UI customization
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
+
+    [BsonElement("color")]
+    public string? Color { get; set; }
+
+    [BsonElement("isArchived")]
     public bool IsArchived { get; set; } = false;
-    
-    // Navigation properties
-    public ICollection<Sprint> Sprints { get; set; } = new List<Sprint>();
-    public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+
+    [BsonElement("ownerId")]
+    public string OwnerId { get; set; } = string.Empty;
+
+    [BsonElement("memberIds")]
+    public List<string> MemberIds { get; set; } = new();
+
+    [BsonElement("memberRoles")]
+    public Dictionary<string, string> MemberRoles { get; set; } = new();
 }

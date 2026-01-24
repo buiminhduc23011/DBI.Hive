@@ -10,3 +10,4 @@ C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DB
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\refint\DBI.Task.Domain.dll
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.pdb
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\ref\DBI.Task.Domain.dll
+C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.Domain\obj\Debug\net8.0\DBI.Task.Domain.csproj.AssemblyReference.cache

@@ -1,6 +1,24 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Runtime config - loaded from /config.json (can be edited after deployment)
+let API_URL = 'http://localhost:5000/api';
+
+// Load runtime config
+const loadConfig = async () => {
+    try {
+        const response = await fetch('/config.json');
+        const config = await response.json();
+        if (config.apiUrl) {
+            API_URL = config.apiUrl;
+            api.defaults.baseURL = API_URL;
+        }
+    } catch (error) {
+        console.warn('Could not load config.json, using default API URL');
+    }
+};
+
+// Initialize config on module load
+loadConfig();
 
 export const api = axios.create({
     baseURL: API_URL,

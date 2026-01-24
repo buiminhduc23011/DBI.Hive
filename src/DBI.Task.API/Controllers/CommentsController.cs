@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using DBI.Task.Infrastructure.Data;
 using DBI.Task.Domain.Entities;
 using DBI.Task.Application.DTOs;
@@ -13,83 +13,97 @@ namespace DBI.Task.API.Controllers;
 [Route("api/tasks/{taskId}/[controller]")]
 public class CommentsController : ControllerBase
 {
-    private readonly DBITaskDbContext _context;
+    private readonly IMongoDbContext _context;
 
-    public CommentsController(DBITaskDbContext context)
+    public CommentsController(IMongoDbContext context)
     {
         _context = context;
     }
 
     [HttpGet]
-    public async System.Threading.Tasks.Task<IActionResult> GetComments(int taskId)
+    public async System.Threading.Tasks.Task<IActionResult> GetComments(string taskId)
     {
+        var filter = Builders<Comment>.Filter.Eq(c => c.TaskId, taskId);
         var comments = await _context.Comments
-            .Include(c => c.User)
-            .Where(c => c.TaskId == taskId)
-            .OrderBy(c => c.CreatedAt)
-            .Select(c => new CommentDto
+            .Find(filter)
+            .SortBy(c => c.CreatedAt)
+            .ToListAsync();
+
+        // Get user details for comments
+        var userIds = comments.Select(c => c.UserId).Distinct().ToList();
+        var usersFilter = Builders<User>.Filter.In(u => u.Id, userIds);
+        var users = await _context.Users.Find(usersFilter).ToListAsync();
+        var userDict = users.ToDictionary(u => u.Id, u => u);
+
+        var commentDtos = comments.Select(c => {
+            userDict.TryGetValue(c.UserId, out var user);
+            return new CommentDto
             {
                 Id = c.Id,
                 Content = c.Content,
                 TaskId = c.TaskId,
                 UserId = c.UserId,
-                UserName = c.User.FullName,
-                UserAvatar = c.User.AvatarUrl,
+                UserName = user?.FullName ?? c.UserName ?? "Unknown",
+                UserAvatar = user?.AvatarUrl ?? c.UserAvatarUrl,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt
-            })
-            .ToListAsync();
+            };
+        }).ToList();
 
-        return Ok(comments);
+        return Ok(commentDtos);
     }
 
     [HttpPost]
-    public async System.Threading.Tasks.Task<IActionResult> CreateComment(int taskId, [FromBody] CreateCommentRequest request)
+    public async System.Threading.Tasks.Task<IActionResult> CreateComment(string taskId, [FromBody] CreateCommentRequest request)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
+        // Get user info for denormalization
+        var user = await _context.Users.Find(u => u.Id == userId).FirstOrDefaultAsync();
+        
         var comment = new Comment
         {
             Content = request.Content,
             TaskId = taskId,
             UserId = userId,
+            UserName = user?.FullName ?? "Unknown",
+            UserAvatarUrl = user?.AvatarUrl,
             CreatedAt = DateTime.UtcNow
         };
 
-        await _context.Comments.AddAsync(comment);
-        await _context.SaveChangesAsync();
+        await _context.Comments.InsertOneAsync(comment);
 
-        var commentDto = await _context.Comments
-            .Include(c => c.User)
-            .Where(c => c.Id == comment.Id)
-            .Select(c => new CommentDto
-            {
-                Id = c.Id,
-                Content = c.Content,
-                TaskId = c.TaskId,
-                UserId = c.UserId,
-                UserName = c.User.FullName,
-                UserAvatar = c.User.AvatarUrl,
-                CreatedAt = c.CreatedAt
-            })
-            .FirstAsync();
+        var commentDto = new CommentDto
+        {
+            Id = comment.Id,
+            Content = comment.Content,
+            TaskId = comment.TaskId,
+            UserId = comment.UserId,
+            UserName = comment.UserName,
+            UserAvatar = comment.UserAvatarUrl,
+            CreatedAt = comment.CreatedAt
+        };
 
         return CreatedAtAction(nameof(GetComments), new { taskId }, commentDto);
     }
 
     [HttpDelete("{id}")]
-    public async System.Threading.Tasks.Task<IActionResult> DeleteComment(int taskId, int id)
+    public async System.Threading.Tasks.Task<IActionResult> DeleteComment(string taskId, string id)
     {
-        var comment = await _context.Comments.FindAsync(id);
-        if (comment == null || comment.TaskId != taskId)
+        var filter = Builders<Comment>.Filter.And(
+            Builders<Comment>.Filter.Eq(c => c.Id, id),
+            Builders<Comment>.Filter.Eq(c => c.TaskId, taskId)
+        );
+
+        var comment = await _context.Comments.Find(filter).FirstOrDefaultAsync();
+        if (comment == null)
             return NotFound();
 
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
         if (comment.UserId != userId)
             return Forbid();
 
-        _context.Comments.Remove(comment);
-        await _context.SaveChangesAsync();
+        await _context.Comments.DeleteOneAsync(filter);
 
         return NoContent();
     }
