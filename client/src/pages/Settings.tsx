@@ -85,29 +85,29 @@ export const Settings: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-1">{t('settings.subtitle')}</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Sidebar */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-                    <nav className="space-y-1">
+            <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-6">
+                {/* Tabs - horizontal scroll on mobile, vertical on desktop */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto lg:overflow-visible">
+                    <nav className="flex lg:flex-col lg:space-y-1 space-x-2 lg:space-x-0 p-2 lg:p-4 min-w-max lg:min-w-0">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                                className={`flex items-center space-x-2 lg:space-x-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg transition-colors whitespace-nowrap
                                     ${activeTab === tab.id
                                         ? 'bg-dbi-primary text-white'
                                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                             >
-                                <tab.icon size={20} />
-                                <span>{tab.label}</span>
+                                <tab.icon size={18} className="lg:w-5 lg:h-5" />
+                                <span className="text-sm lg:text-base">{tab.label}</span>
                             </button>
                         ))}
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            className="flex items-center space-x-2 lg:space-x-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors whitespace-nowrap"
                         >
-                            <LogOut size={20} />
-                            <span>{t('auth.logout')}</span>
+                            <LogOut size={18} className="lg:w-5 lg:h-5" />
+                            <span className="text-sm lg:text-base">{t('auth.logout')}</span>
                         </button>
                     </nav>
                 </div>
@@ -120,9 +120,9 @@ export const Settings: React.FC = () => {
                             <div className="flex items-center space-x-6">
                                 <div className="relative">
                                     {avatarPreview ? (
-                                        <img 
-                                            src={avatarPreview} 
-                                            alt="Avatar" 
+                                        <img
+                                            src={avatarPreview}
+                                            alt="Avatar"
                                             className="w-20 h-20 rounded-full object-cover"
                                         />
                                     ) : (
@@ -193,7 +193,7 @@ export const Settings: React.FC = () => {
                                 </div>
                             )}
 
-                            <button 
+                            <button
                                 onClick={handleSaveProfile}
                                 disabled={isSaving}
                                 className="btn-primary disabled:opacity-50"
@@ -243,7 +243,7 @@ export const Settings: React.FC = () => {
                                         <span>{t('settings.language')}</span>
                                     </h4>
                                     <div className="flex space-x-4">
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setLanguage('vi');
                                                 updateProfile({ language: 'vi' }).catch(console.error);
@@ -253,7 +253,7 @@ export const Settings: React.FC = () => {
                                             <span className="text-2xl">🇻🇳</span>
                                             <span className="text-gray-800 dark:text-gray-200">Tiếng Việt</span>
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setLanguage('en');
                                                 updateProfile({ language: 'en' }).catch(console.error);
@@ -270,7 +270,7 @@ export const Settings: React.FC = () => {
                                 <div>
                                     <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">{t('settings.theme')}</h4>
                                     <div className="flex space-x-4">
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setDarkMode(false);
                                                 updateProfile({ theme: 'light' }).catch(console.error);
@@ -282,7 +282,7 @@ export const Settings: React.FC = () => {
                                             </div>
                                             <span className="text-sm text-gray-800">{t('settings.light')}</span>
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setDarkMode(true);
                                                 updateProfile({ theme: 'dark' }).catch(console.error);
@@ -302,7 +302,7 @@ export const Settings: React.FC = () => {
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                                         {t('settings.onboardingDesc')}
                                     </p>
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             localStorage.removeItem('dbi_hive_onboarding_completed');
                                             window.location.reload();
