@@ -64,6 +64,11 @@ const translations: Translations = {
     'dashboard.unassignedTasks': { en: 'Unassigned Tasks', vi: 'Công việc chưa giao' },
     'dashboard.needsAssignment': { en: 'Needs assignment', vi: 'Cần giao việc' },
     'dashboard.allAssigned': { en: 'All tasks assigned', vi: 'Đã giao hết công việc' },
+    // Smart Task Display
+    'dashboard.today': { en: 'Today', vi: 'Hôm nay' },
+    'dashboard.thisWeek': { en: 'This Week', vi: 'Tuần này' },
+    'dashboard.later': { en: 'Later', vi: 'Sau đó' },
+    'dashboard.ganttChart': { en: 'Project Timeline', vi: 'Tiến độ dự án' },
 
     // Kanban
     'kanban.title': { en: 'Kanban Board', vi: 'Bảng Kanban' },
@@ -83,9 +88,11 @@ const translations: Translations = {
     'task.project': { en: 'Project', vi: 'Dự án' },
     'task.assignee': { en: 'Assignee', vi: 'Người thực hiện' },
     'task.deadline': { en: 'Deadline', vi: 'Hạn chót' },
+    'task.startDate': { en: 'Start Date', vi: 'Ngày bắt đầu' },
     'task.dueDate': { en: 'Due', vi: 'Đến hạn' },
     'task.selectProject': { en: 'Select a project', vi: 'Chọn dự án' },
     'task.createTask': { en: 'Create Task', vi: 'Tạo công việc' },
+    'task.noDeadline': { en: 'No deadline', vi: 'Chưa có hạn' },
 
     // Priority
     'priority.low': { en: 'Low', vi: 'Thấp' },

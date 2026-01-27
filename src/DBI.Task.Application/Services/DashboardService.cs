@@ -19,10 +19,13 @@ public class DashboardService : IDashboardService
         _context = context;
     }
 
-    public async System.Threading.Tasks.Task<DashboardDto> GetDashboardDataAsync(string userId, bool myTasksOnly = false)
+    public async System.Threading.Tasks.Task<DashboardDto> GetDashboardDataAsync(string userId,
+        bool myTasksOnly = false)
     {
-        var now = DateTime.UtcNow;
-        var today = now.Date;
+        // Sử dụng local timezone (Vietnam) thay vì UTC để đảm bảo "hôm nay" chính xác
+        var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // UTC+7
+        var localNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, localTimeZone);
+        var today = localNow.Date;
         var endOfWeek = today.AddDays(7);
 
         // Get user's projects (owner or member)
@@ -49,39 +52,89 @@ public class DashboardService : IDashboardService
 
         var totalTasks = await _context.Tasks.CountDocumentsAsync(taskFilter);
 
-        var completedFilter = taskFilter & Builders<TaskItem>.Filter.Eq(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var completedFilter =
+            taskFilter & Builders<TaskItem>.Filter.Eq(t => t.Status, Domain.Enums.TaskItemStatus.Done);
         var completedTasks = await _context.Tasks.CountDocumentsAsync(completedFilter);
 
-        var overdueFilter = taskFilter & 
-            Builders<TaskItem>.Filter.Lt(t => t.Deadline, today) & 
-            Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done) &
-            Builders<TaskItem>.Filter.Ne(t => t.Deadline, null);
+        var overdueFilter = taskFilter &
+                            Builders<TaskItem>.Filter.Lt(t => t.Deadline, today) &
+                            Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done) &
+                            Builders<TaskItem>.Filter.Ne(t => t.Deadline, null);
         var overdueTasks = await _context.Tasks.CountDocumentsAsync(overdueFilter);
 
-        var dueTodayFilter = taskFilter & 
-            Builders<TaskItem>.Filter.Gte(t => t.Deadline, today) & 
-            Builders<TaskItem>.Filter.Lt(t => t.Deadline, today.AddDays(1)) &
-            Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var dueTodayFilter = taskFilter &
+                             Builders<TaskItem>.Filter.Gte(t => t.Deadline, today) &
+                             Builders<TaskItem>.Filter.Lt(t => t.Deadline, today.AddDays(1)) &
+                             Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
         var dueTodayTasks = await _context.Tasks.CountDocumentsAsync(dueTodayFilter);
 
-        var dueThisWeekFilter = taskFilter & 
-            Builders<TaskItem>.Filter.Gte(t => t.Deadline, today) & 
-            Builders<TaskItem>.Filter.Lte(t => t.Deadline, endOfWeek) &
-            Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var dueThisWeekFilter = taskFilter &
+                                Builders<TaskItem>.Filter.Gte(t => t.Deadline, today) &
+                                Builders<TaskItem>.Filter.Lte(t => t.Deadline, endOfWeek) &
+                                Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
         var dueThisWeekTasks = await _context.Tasks.CountDocumentsAsync(dueThisWeekFilter);
 
-        // Recent tasks
+        // Recent tasks - chỉ lấy task chưa hoàn thành (pending)
+        var pendingFilter = taskFilter & Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
         var recentTasks = await _context.Tasks
-            .Find(taskFilter)
+            .Find(pendingFilter)
             .SortByDescending(t => t.CreatedAt)
             .Limit(5)
             .ToListAsync();
 
         // Overdue tasks list
-        var overdueTasks_List = await _context.Tasks
+        var overdueTasksList = await _context.Tasks
             .Find(overdueFilter)
             .SortBy(t => t.Deadline)
             .Limit(10)
+            .ToListAsync();
+
+        // Smart Task Display - phân loại theo deadline
+        // Today tasks (deadline hôm nay, chưa hoàn thành)
+        var todayTasksList = await _context.Tasks
+            .Find(dueTodayFilter)
+            .SortBy(t => t.Deadline)
+            .Limit(10)
+            .ToListAsync();
+
+        // This week tasks (deadline từ ngày mai đến cuối tuần, chưa hoàn thành)
+        var thisWeekOnlyFilter = taskFilter &
+                                 Builders<TaskItem>.Filter.Gt(t => t.Deadline, today.AddDays(1)) &
+                                 Builders<TaskItem>.Filter.Lte(t => t.Deadline, endOfWeek) &
+                                 Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var thisWeekTasksList = await _context.Tasks
+            .Find(thisWeekOnlyFilter)
+            .SortBy(t => t.Deadline)
+            .Limit(10)
+            .ToListAsync();
+
+        // Later tasks (deadline sau tuần này, chưa hoàn thành)
+        var laterFilter = taskFilter &
+                          Builders<TaskItem>.Filter.Gt(t => t.Deadline, endOfWeek) &
+                          Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var laterTasksList = await _context.Tasks
+            .Find(laterFilter)
+            .SortBy(t => t.Deadline)
+            .Limit(10)
+            .ToListAsync();
+
+        // No deadline tasks (không có deadline, chưa hoàn thành)
+        var noDeadlineFilter = taskFilter &
+                               Builders<TaskItem>.Filter.Eq(t => t.Deadline, null) &
+                               Builders<TaskItem>.Filter.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Done);
+        var noDeadlineTasksList = await _context.Tasks
+            .Find(noDeadlineFilter)
+            .SortByDescending(t => t.CreatedAt)
+            .Limit(10)
+            .ToListAsync();
+
+        // Gantt tasks - tất cả tasks có deadline (bao gồm cả Done để hiển thị trên Gantt)
+        var ganttFilter = taskFilter &
+                          Builders<TaskItem>.Filter.Ne(t => t.Deadline, null);
+        var ganttTasksList = await _context.Tasks
+            .Find(ganttFilter)
+            .SortBy(t => t.Deadline)
+            .Limit(30)
             .ToListAsync();
 
         // Project progress - only user's projects
@@ -102,7 +155,7 @@ public class DashboardService : IDashboardService
                 ProjectName = project.Name,
                 TotalTasks = (int)projectTotalTasks,
                 CompletedTasks = (int)projectCompletedTasks,
-                ProgressPercentage = projectTotalTasks > 0 
+                ProgressPercentage = projectTotalTasks > 0
                     ? Math.Round((double)projectCompletedTasks / projectTotalTasks * 100, 1)
                     : 0
             });
@@ -119,8 +172,15 @@ public class DashboardService : IDashboardService
             DueThisWeekTasks = (int)dueThisWeekTasks,
             MyTasks = myTasksOnly ? (int)totalTasks : 0,
             RecentTasks = recentTasks.Select(MapToTaskDto).ToList(),
-            OverdueTasksList = overdueTasks_List.Select(MapToTaskDto).ToList(),
-            ProjectProgress = projectProgress
+            OverdueTasksList = overdueTasksList.Select(MapToTaskDto).ToList(),
+            ProjectProgress = projectProgress,
+            // Smart Task Display
+            TodayTasks = todayTasksList.Select(MapToTaskDto).ToList(),
+            ThisWeekTasks = thisWeekTasksList.Select(MapToTaskDto).ToList(),
+            LaterTasks = laterTasksList.Select(MapToTaskDto).ToList(),
+            NoDeadlineTasks = noDeadlineTasksList.Select(MapToTaskDto).ToList(),
+            // Gantt Chart - bao gồm tất cả tasks có deadline
+            GanttTasks = ganttTasksList.Select(MapToTaskDto).ToList()
         };
     }
 

@@ -52,6 +52,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
         status: task.status,
         priority: task.priority,
         assignedToId: task.assignedToId || '',
+        startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : '',
         deadline: task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : '',
     });
 
@@ -71,6 +72,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                 status: task.status,
                 priority: task.priority,
                 assignedToId: task.assignedToId || '',
+                startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : '',
                 deadline: task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : '',
             });
         }
@@ -121,6 +123,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                 status: editData.status,
                 priority: editData.priority,
                 assignedToId: editData.assignedToId || undefined,
+                startDate: editData.startDate || undefined,
                 deadline: editData.deadline || undefined,
             });
             setIsEditing(false);
@@ -346,6 +349,26 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                 ) : (
                                     <span className="text-sm text-gray-700 dark:text-gray-300">
                                         {task.assignedToName || (language === 'vi' ? 'Chưa gán' : 'Unassigned')}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Start Date */}
+                            <div className="space-y-1">
+                                <label className="text-sm text-gray-500 dark:text-gray-400 flex items-center space-x-1">
+                                    <Calendar size={14} />
+                                    <span>{t('task.startDate')}</span>
+                                </label>
+                                {isEditing && canEdit ? (
+                                    <input
+                                        type="date"
+                                        value={editData.startDate}
+                                        onChange={(e) => setEditData({ ...editData, startDate: e.target.value })}
+                                        className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm dark:text-white"
+                                    />
+                                ) : (
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                                        {formatDate(task.startDate) || (language === 'vi' ? 'Không có' : 'None')}
                                     </span>
                                 )}
                             </div>

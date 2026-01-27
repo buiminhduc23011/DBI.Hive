@@ -6,11 +6,9 @@ namespace DBI.Task.Domain.Entities;
 
 public class TaskItem : BaseEntity
 {
-    [BsonElement("title")]
-    public string Title { get; set; } = string.Empty;
+    [BsonElement("title")] public string Title { get; set; } = string.Empty;
 
-    [BsonElement("description")]
-    public string? Description { get; set; }
+    [BsonElement("description")] public string? Description { get; set; }
 
     [BsonElement("status")]
     [BsonRepresentation(BsonType.String)]
@@ -32,6 +30,10 @@ public class TaskItem : BaseEntity
     [BsonRepresentation(BsonType.ObjectId)]
     public string? AssignedToId { get; set; }
 
+    [BsonElement("startDate")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime? StartDate { get; set; }
+
     [BsonElement("deadline")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? Deadline { get; set; }
@@ -40,16 +42,12 @@ public class TaskItem : BaseEntity
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime? CompletedAt { get; set; }
 
-    [BsonElement("orderIndex")]
-    public int OrderIndex { get; set; }
+    [BsonElement("orderIndex")] public int OrderIndex { get; set; }
 
     // Denormalized fields for faster queries
-    [BsonElement("projectName")]
-    public string? ProjectName { get; set; }
+    [BsonElement("projectName")] public string? ProjectName { get; set; }
 
-    [BsonElement("sprintName")]
-    public string? SprintName { get; set; }
+    [BsonElement("sprintName")] public string? SprintName { get; set; }
 
-    [BsonElement("assignedToName")]
-    public string? AssignedToName { get; set; }
+    [BsonElement("assignedToName")] public string? AssignedToName { get; set; }
 }

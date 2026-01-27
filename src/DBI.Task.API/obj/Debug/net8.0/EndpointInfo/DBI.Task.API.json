@@ -908,6 +908,11 @@
           "status": {
             "$ref": "#/components/schemas/TaskItemStatus"
           },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "deadline": {
             "type": "string",
             "format": "date-time",
@@ -1054,6 +1059,11 @@
           },
           "assignedToId": {
             "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
           "deadline": {

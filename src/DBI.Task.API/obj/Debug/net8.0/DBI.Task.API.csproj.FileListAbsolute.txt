@@ -130,4 +130,3 @@ C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.API\bin\Debug\net8.0\ZstdS
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.API\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.API\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
 C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.API\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll
-C:\Users\ducbu\Documents\GitHub\DBI.Hive\src\DBI.Task.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
