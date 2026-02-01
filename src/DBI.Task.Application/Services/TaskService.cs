@@ -25,7 +25,7 @@ public class TaskService : ITaskService
     private readonly IRepository<Sprint> _sprintRepository;
 
     public TaskService(
-        IMongoDbContext context, 
+        IMongoDbContext context,
         IRepository<TaskItem> taskRepository,
         IRepository<User> userRepository,
         IRepository<Project> projectRepository,
@@ -38,7 +38,8 @@ public class TaskService : ITaskService
         _sprintRepository = sprintRepository;
     }
 
-    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter, string userId)
+    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetTasksAsync(TaskFilterRequest filter,
+        string userId)
     {
         // Get user's active (non-archived) projects (owner or member)
         var projectFilter = Builders<Project>.Filter.And(
@@ -91,8 +92,8 @@ public class TaskService : ITaskService
         if (!filter.IncludeBacklog)
             filters.Add(filterBuilder.Ne(t => t.Status, Domain.Enums.TaskItemStatus.Backlog));
 
-        var combinedFilter = filters.Any() 
-            ? filterBuilder.And(filters) 
+        var combinedFilter = filters.Any()
+            ? filterBuilder.And(filters)
             : filterBuilder.Empty;
 
         var tasks = await _context.Tasks
@@ -123,7 +124,7 @@ public class TaskService : ITaskService
             .SortByDescending(t => t.OrderIndex)
             .Limit(1)
             .FirstOrDefaultAsync();
-        
+
         var nextOrder = (maxOrder?.OrderIndex ?? 0) + 1;
 
         // Get related entities for denormalization
@@ -133,7 +134,7 @@ public class TaskService : ITaskService
 
         if (!string.IsNullOrEmpty(request.SprintId))
             sprint = await _sprintRepository.GetByIdAsync(request.SprintId);
-        
+
         if (!string.IsNullOrEmpty(request.AssignedToId))
             assignee = await _userRepository.GetByIdAsync(request.AssignedToId);
 
@@ -148,6 +149,7 @@ public class TaskService : ITaskService
             AssignedToId = request.AssignedToId,
             AssignedToName = assignee?.FullName,
             Priority = request.Priority,
+            StartDate = request.StartDate,
             Deadline = request.Deadline,
             Status = request.Status ?? Domain.Enums.TaskItemStatus.Todo,
             OrderIndex = nextOrder,
@@ -187,7 +189,8 @@ public class TaskService : ITaskService
         return MapToDto(task);
     }
 
-    public async System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(string id, UpdateTaskRequest request, string userId)
+    public async System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(string id, UpdateTaskRequest request,
+        string userId)
     {
         var task = await _taskRepository.GetByIdAsync(id);
         if (task == null) return null;
@@ -236,6 +239,12 @@ public class TaskService : ITaskService
             changes.Add("assignee changed");
         }
 
+        if (request.StartDate.HasValue && task.StartDate != request.StartDate.Value)
+        {
+            task.StartDate = request.StartDate.Value;
+            changes.Add("start date changed");
+        }
+
         if (request.Deadline.HasValue && task.Deadline != request.Deadline.Value)
         {
             task.Deadline = request.Deadline.Value;
@@ -277,12 +286,13 @@ public class TaskService : ITaskService
         // Delete related comments and attachments
         await _context.Comments.DeleteManyAsync(c => c.TaskId == id);
         await _context.Attachments.DeleteManyAsync(a => a.TaskId == id);
-        
+
         await _taskRepository.DeleteAsync(id);
         return true;
     }
 
-    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(string? projectId, string userId)
+    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(string? projectId,
+        string userId)
     {
         // Get user's active (non-archived) projects (owner or member)
         var projectFilter = Builders<Project>.Filter.And(
@@ -300,7 +310,7 @@ public class TaskService : ITaskService
             Builders<TaskItem>.Filter.Eq(t => t.Status, Domain.Enums.TaskItemStatus.Backlog),
             Builders<TaskItem>.Filter.In(t => t.ProjectId, userProjectIds)
         );
-        
+
         if (!string.IsNullOrEmpty(projectId))
             filter = filter & Builders<TaskItem>.Filter.Eq(t => t.ProjectId, projectId);
 
@@ -327,6 +337,7 @@ public class TaskService : ITaskService
             SprintName = task.SprintName,
             AssignedToId = task.AssignedToId,
             AssignedToName = task.AssignedToName,
+            StartDate = task.StartDate,
             Deadline = task.Deadline,
             CreatedAt = task.CreatedAt,
             UpdatedAt = task.UpdatedAt,

@@ -28,6 +28,7 @@ export interface Task {
     sprintName?: string;
     assignedToId?: string;
     assignedToName?: string;
+    startDate?: string;
     deadline?: string;
     createdAt: string;
     updatedAt?: string;
@@ -170,7 +171,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         set({
             tasks: get().tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
         });
-        
+
         try {
             const response = await api.put(`/tasks/${id}`, updates);
             // Update with server response
@@ -197,7 +198,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     addProjectMember: async (projectId, email, role = 'Member') => {
         try {
             const response = await api.post(`/projects/${projectId}/members`, { email, role });
-            const projects = get().projects.map(p => 
+            const projects = get().projects.map(p =>
                 p.id === projectId ? response.data : p
             );
             set({ projects });
@@ -210,7 +211,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     removeProjectMember: async (projectId, userId) => {
         try {
             const response = await api.delete(`/projects/${projectId}/members/${userId}`);
-            const projects = get().projects.map(p => 
+            const projects = get().projects.map(p =>
                 p.id === projectId ? response.data : p
             );
             set({ projects });

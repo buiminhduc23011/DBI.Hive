@@ -217,7 +217,7 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({ id, title, color, tas
             >
                 <div
                     ref={setNodeRef}
-                    className={`space-y-3 min-h-[200px] rounded-lg transition-colors ${isOver ? 'bg-dbi-primary/10' : ''}`}
+                    className={`space-y-3 min-h-[200px] max-h-[calc(100vh-310px)] overflow-y-auto pr-2 custom-scrollbar rounded-lg transition-colors ${isOver ? 'bg-dbi-primary/10' : ''}`}
                 >
                     {tasks.map((task) => (
                         <TaskCard
@@ -257,6 +257,7 @@ export const KanbanBoard: React.FC = () => {
         priority: Priority.Medium,
         projectId: '',
         status: TaskItemStatus.Todo,
+        startDate: new Date().toISOString().split('T')[0],
         deadline: '',
     });
 
@@ -425,6 +426,7 @@ export const KanbanBoard: React.FC = () => {
                 priority: Priority.Medium,
                 projectId: '',
                 status: TaskItemStatus.Todo,
+                startDate: new Date().toISOString().split('T')[0],
                 deadline: '',
             });
         } catch (error) {
@@ -642,6 +644,17 @@ export const KanbanBoard: React.FC = () => {
                                     <option value={Priority.High}>{t('priority.high')}</option>
                                     <option value={Priority.Critical}>{t('priority.critical')}</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {t('task.startDate')}
+                                </label>
+                                <input
+                                    type="date"
+                                    value={formData.startDate}
+                                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-dbi-primary focus:border-transparent"
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

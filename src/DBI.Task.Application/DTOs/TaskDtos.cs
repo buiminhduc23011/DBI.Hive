@@ -15,6 +15,7 @@ public class TaskDto
     public string? SprintName { get; set; }
     public string? AssignedToId { get; set; }
     public string? AssignedToName { get; set; }
+    public DateTime? StartDate { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
@@ -33,6 +34,7 @@ public class CreateTaskRequest
     public string? AssignedToId { get; set; }
     public Priority Priority { get; set; } = Priority.Medium;
     public TaskItemStatus? Status { get; set; }
+    public DateTime? StartDate { get; set; }
     public DateTime? Deadline { get; set; }
 }
 
@@ -44,6 +46,7 @@ public class UpdateTaskRequest
     public Priority? Priority { get; set; }
     public string? SprintId { get; set; }
     public string? AssignedToId { get; set; }
+    public DateTime? StartDate { get; set; }
     public DateTime? Deadline { get; set; }
     public int? OrderIndex { get; set; }
 }
