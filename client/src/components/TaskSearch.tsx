@@ -163,7 +163,11 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
 
             {/* Results Dropdown */}
             {isOpen && (searchText.length >= 2 || results.length > 0) && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto z-50">
+                <div
+                    id="task-search-results"
+                    role="listbox"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto z-50"
+                >
                     {isLoading ? (
                         <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-dbi-primary mx-auto"></div>
@@ -184,6 +188,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                                 <button
                                     key={task.id}
                                     onClick={() => handleSelect(task)}
+                                    role="option"
                                     className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                                 >
                                     <div className="flex items-start justify-between">
