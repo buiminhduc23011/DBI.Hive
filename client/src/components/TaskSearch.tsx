@@ -29,18 +29,34 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [shortcutLabel, setShortcutLabel] = useState('Ctrl K');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        if (typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)) {
+            setShortcutLabel('⌘K');
+        }
+
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
 
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, []);
 
     useEffect(() => {
@@ -118,12 +134,18 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     onFocus={() => setIsOpen(true)}
                     placeholder={language === 'vi' ? 'Tìm kiếm công việc...' : 'Search tasks...'}
                     aria-label={language === 'vi' ? 'Tìm kiếm công việc' : 'Search tasks'}
-                    aria-expanded={isOpen && (searchText.length >= 2 || results.length > 0)}
-                    aria-controls="task-search-results"
-                    aria-autocomplete="list"
-                    role="combobox"
                     className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && (
+                    <div
+                        className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none"
+                        aria-hidden="true"
+                    >
+                        <span className="text-gray-400 text-xs bg-gray-200 dark:bg-gray-600 px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-500 font-sans opacity-70">
+                            {shortcutLabel}
+                        </span>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
