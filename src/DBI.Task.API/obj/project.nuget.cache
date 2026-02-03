@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BZ50hoLax5I=",
+  "dgSpecHash": "Jb6XBooNz3A=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\DBI.Task.API.csproj",
+  "projectFilePath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.API\\DBI.Task.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ducbu\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\ducbu\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",
