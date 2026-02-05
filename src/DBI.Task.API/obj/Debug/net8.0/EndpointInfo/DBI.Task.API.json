@@ -1083,7 +1083,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "apiKey",
-        "description": "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token.",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
         "name": "Authorization",
         "in": "header"
       }

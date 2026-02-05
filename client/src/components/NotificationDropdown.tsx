@@ -22,10 +22,10 @@ export const NotificationDropdown: React.FC = () => {
     const { tasks, projects } = useProjectStore();
     const { user } = useAuthStore();
     const { language } = useI18nStore();
-    
+
     // Calculate unassigned tasks for owners/managers
     const unassignedTasks = tasks.filter(t => !t.assignedToId && t.status !== 3);
-    const isOwnerOrManager = projects.some(p => 
+    const isOwnerOrManager = projects.some(p =>
         p.ownerId === user?.id || p.memberRoles?.[user?.id || ''] === 'Manager'
     );
     const unassignedCount = isOwnerOrManager ? unassignedTasks.length : 0;
@@ -94,7 +94,7 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <div
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
@@ -108,7 +108,7 @@ export const NotificationDropdown: React.FC = () => {
                                             {language === 'vi' ? 'Công việc cần giao' : 'Tasks need assignment'}
                                         </p>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            {language === 'vi' 
+                                            {language === 'vi'
                                                 ? `${unassignedCount} công việc chưa được giao cho ai`
                                                 : `${unassignedCount} tasks not assigned to anyone`
                                             }
@@ -117,7 +117,7 @@ export const NotificationDropdown: React.FC = () => {
                                 </div>
                             </div>
                         )}
-                        
+
                         {notifications.length === 0 ? (
                             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
                                 <Bell size={40} className="mx-auto mb-3 text-gray-300 dark:text-gray-600" />
@@ -178,7 +178,7 @@ export const NotificationDropdown: React.FC = () => {
                     )}
                 </div>
             )}
-            
+
             {/* Unassigned Tasks Modal */}
             {showUnassignedModal && (
                 <UnassignedTasksModal

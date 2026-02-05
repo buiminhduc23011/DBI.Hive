@@ -9,11 +9,15 @@ using DBI.Task.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// =======================
+// Add services
+// =======================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger with JWT authentication
+// =======================
+// Swagger + JWT
+// =======================
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -25,7 +29,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token.",
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -48,125 +52,97 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configure MongoDB
+// =======================
+// MongoDB
+// =======================
 var mongoSettings = new MongoDbSettings
 {
     ConnectionString = builder.Configuration["MongoDB:ConnectionString"] ?? "mongodb://localhost:27017",
     DatabaseName = builder.Configuration["MongoDB:DatabaseName"] ?? "DBITaskDB"
 };
+
 builder.Services.AddSingleton(mongoSettings);
 builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 
-// Configure JWT Authentication
-var jwtSecret = builder.Configuration["Jwt:Secret"] ?? "DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security";
+// =======================
+// JWT Authentication
+// =======================
+var jwtSecret = builder.Configuration["Jwt:Secret"]
+    ?? "DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security";
+
 var key = Encoding.ASCII.GetBytes(jwtSecret);
 
 builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "DBI.Task.API",
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "DBI.Task.Client",
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "DBI.Task.API",
+
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "DBI.Task.Client",
+
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 builder.Services.AddAuthorization();
 
-// Configure CORS
+// =======================
+// CORS (NGROK / DEV / PROD OK)
+// =======================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
-// Register repositories and services
+// =======================
+// DI
+// =======================
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-// Register background service
 builder.Services.AddHostedService<NotificationBackgroundService>();
 
+// =======================
+// Build app
+// =======================
 var app = builder.Build();
 
-// Global exception handler - must be FIRST to catch all exceptions
-app.Use(async (context, next) =>
-{
-    // Add CORS headers manually for all requests (including errors)
-    context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
-    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization");
+// =======================
+// Middleware order 
+// =======================
+app.UseCors("AllowFrontend"); // 
 
-    // Handle preflight OPTIONS request
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.StatusCode = 200;
-        return;
-    }
-
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        var logger = context.RequestServices.GetService<ILogger<Program>>();
-        logger?.LogError(ex, "Unhandled exception occurred");
-
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync(
-            $"{{\"error\": \"{ex.Message.Replace("\"", "\\\"")}\", \"type\": \"{ex.GetType().Name}\"}}");
-    }
-});
-
-// Configure the HTTP request pipeline.
-// Enable Swagger in all environments for API documentation
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// CORS middleware (backup, headers already added above)
-app.UseCors("AllowFrontend");
-
-// Seed database on startup
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<IMongoDbContext>();
-        var seeder = new DbSeeder(context);
-        await seeder.SeedAsync();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
-    }
-}
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// =======================
+// Run
+// =======================
+app.Run("http://0.0.0.0:5555");

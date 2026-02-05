@@ -16,6 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async System.Threading.Tasks.Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -25,7 +26,7 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
-
+    [AllowAnonymous]
     [HttpPost("login")]
     public async System.Threading.Tasks.Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -35,7 +36,7 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
-
+    [AllowAnonymous]
     [HttpPost("refresh-token")]
     public async System.Threading.Tasks.Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
@@ -45,7 +46,7 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
-
+    [AllowAnonymous]
     [HttpPost("revoke-token")]
     public async System.Threading.Tasks.Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequest request)
     {
