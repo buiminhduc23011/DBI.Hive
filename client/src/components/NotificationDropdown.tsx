@@ -21,7 +21,7 @@ export const NotificationDropdown: React.FC = () => {
     } = useNotificationStore();
     const { tasks, projects } = useProjectStore();
     const { user } = useAuthStore();
-    const { language } = useI18nStore();
+    const { language, t } = useI18nStore();
     
     // Calculate unassigned tasks for owners/managers
     const unassignedTasks = tasks.filter(t => !t.assignedToId && t.status !== 3);
@@ -66,6 +66,7 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={t('notification.title')}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
                 <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
@@ -79,14 +80,14 @@ export const NotificationDropdown: React.FC = () => {
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                        <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-white">{t('notification.title')}</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
                                 className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
                             >
                                 <CheckCheck size={16} />
-                                <span>Mark all read</span>
+                                <span>{t('notification.markAllRead')}</span>
                             </button>
                         )}
                     </div>
@@ -121,7 +122,7 @@ export const NotificationDropdown: React.FC = () => {
                         {notifications.length === 0 ? (
                             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
                                 <Bell size={40} className="mx-auto mb-3 text-gray-300 dark:text-gray-600" />
-                                <p>No notifications yet</p>
+                                <p>{t('notification.noNotifications')}</p>
                             </div>
                         ) : (
                             notifications.map((notification) => (
@@ -150,7 +151,8 @@ export const NotificationDropdown: React.FC = () => {
                                                 <button
                                                     onClick={() => markAsRead(notification.id)}
                                                     className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                                                    title="Mark as read"
+                                                    title={t('notification.markAsRead')}
+                                                    aria-label={t('notification.markAsRead')}
                                                 >
                                                     <Check size={16} />
                                                 </button>
@@ -158,7 +160,8 @@ export const NotificationDropdown: React.FC = () => {
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
                                                 className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                                title="Delete"
+                                                title={t('common.delete')}
+                                                aria-label={t('common.delete')}
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -172,7 +175,7 @@ export const NotificationDropdown: React.FC = () => {
                     {notifications.length > 0 && (
                         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
                             <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80">
-                                View all notifications
+                                {t('notification.viewAll')}
                             </button>
                         </div>
                     )}
