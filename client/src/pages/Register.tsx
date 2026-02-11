@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useI18nStore } from '../stores/i18nStore';
 
 export const Register: React.FC = () => {
     const navigate = useNavigate();
-    const { register, isLoading, error } = useAuthStore();
+    const { register, isLoading, error, isAuthenticated } = useAuthStore();
     const { t, language, setLanguage } = useI18nStore();
     const [fullName, setFullName] = useState('');
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,7 +37,7 @@ export const Register: React.FC = () => {
         try {
             await register(email, password, fullName, username);
             navigate('/');
-        } catch (err) {
+        } catch {
             // Error handled in store
         }
     };
