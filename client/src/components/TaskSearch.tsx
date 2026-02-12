@@ -29,6 +29,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +43,10 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    useEffect(() => {
+        setActiveIndex(-1);
+    }, [results]);
 
     useEffect(() => {
         const searchTasks = async () => {
@@ -67,6 +72,32 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         const debounce = setTimeout(searchTasks, 300);
         return () => clearTimeout(debounce);
     }, [searchText]);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!isOpen || results.length === 0) return;
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                setActiveIndex(prev => (prev + 1) % results.length);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                setActiveIndex(prev => (prev - 1 + results.length) % results.length);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (activeIndex >= 0 && results[activeIndex]) {
+                    handleSelect(results[activeIndex]);
+                }
+                break;
+            case 'Escape':
+                e.preventDefault();
+                setIsOpen(false);
+                inputRef.current?.blur();
+                break;
+        }
+    };
 
     const handleSelect = (task: Task) => {
         onTaskSelect(task);
@@ -116,11 +147,13 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     onFocus={() => setIsOpen(true)}
+                    onKeyDown={handleKeyDown}
                     placeholder={language === 'vi' ? 'Tìm kiếm công việc...' : 'Search tasks...'}
                     aria-label={language === 'vi' ? 'Tìm kiếm công việc' : 'Search tasks'}
                     aria-expanded={isOpen && (searchText.length >= 2 || results.length > 0)}
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
+                    aria-activedescendant={activeIndex >= 0 ? `task-result-${activeIndex}` : undefined}
                     role="combobox"
                     className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
@@ -162,12 +195,16 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                             <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
                                 {results.length} {language === 'vi' ? 'kết quả' : 'results'}
                             </div>
-                            {results.map((task) => (
+                            {results.map((task, index) => (
                                 <button
                                     key={task.id}
+                                    id={`task-result-${index}`}
                                     onClick={() => handleSelect(task)}
                                     role="option"
-                                    className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                                    aria-selected={activeIndex === index}
+                                    className={`w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left ${
+                                        activeIndex === index ? 'bg-gray-50 dark:bg-gray-700 ring-1 ring-inset ring-dbi-primary/20' : ''
+                                    }`}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 min-w-0">
