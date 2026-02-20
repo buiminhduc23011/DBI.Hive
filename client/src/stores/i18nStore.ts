@@ -152,6 +152,8 @@ const translations: Translations = {
 
     // Notifications
     'notification.title': { en: 'Notifications', vi: 'Thông báo' },
+    'notification.markRead': { en: 'Mark as read', vi: 'Đánh dấu đã đọc' },
+    'notification.unassignedAlert': { en: 'Unassigned tasks alert', vi: 'Cảnh báo công việc chưa giao' },
     'notification.markAllRead': { en: 'Mark all read', vi: 'Đánh dấu đã đọc' },
     'notification.noNotifications': { en: 'No notifications yet', vi: 'Chưa có thông báo' },
     'notification.viewAll': { en: 'View all notifications', vi: 'Xem tất cả thông báo' },
