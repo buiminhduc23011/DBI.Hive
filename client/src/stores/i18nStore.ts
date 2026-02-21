@@ -159,6 +159,7 @@ const translations: Translations = {
     'notification.taskReminders': { en: 'Task Reminders', vi: 'Nhắc nhở công việc' },
     'notification.deadlineAlerts': { en: 'Deadline Alerts', vi: 'Cảnh báo hạn chót' },
     'notification.projectUpdates': { en: 'Project Updates', vi: 'Cập nhật dự án' },
+    'notification.markAsRead': { en: 'Mark as read', vi: 'Đánh dấu đã đọc' },
 
     // Onboarding
     'onboarding.welcome': { en: 'Welcome to DBI.Hive! 🐝', vi: 'Chào mừng đến DBI.Hive! 🐝' },
