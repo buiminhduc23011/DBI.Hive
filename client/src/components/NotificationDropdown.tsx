@@ -21,7 +21,7 @@ export const NotificationDropdown: React.FC = () => {
     } = useNotificationStore();
     const { tasks, projects } = useProjectStore();
     const { user } = useAuthStore();
-    const { language } = useI18nStore();
+    const { language, t } = useI18nStore();
     
     // Calculate unassigned tasks for owners/managers
     const unassignedTasks = tasks.filter(t => !t.assignedToId && t.status !== 3);
@@ -66,6 +66,9 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={unreadCount > 0 ? `${unreadCount} ${t('notification.title')}` : t('notification.title')}
+                aria-expanded={isOpen}
+                aria-haspopup="true"
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
                 <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
@@ -77,12 +80,18 @@ export const NotificationDropdown: React.FC = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                <div
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label={t('notification.title')}
+                    className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
+                >
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                        <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-white">{t('notification.title')}</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
+                                aria-label={t('notification.markAllRead')}
                                 className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
                             >
                                 <CheckCheck size={16} />
@@ -94,12 +103,13 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
+                                type="button"
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
                             >
                                 <div className="flex items-start space-x-3">
                                     <AlertCircle size={20} className="text-orange-500 mt-0.5" />
@@ -115,7 +125,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
@@ -124,54 +134,60 @@ export const NotificationDropdown: React.FC = () => {
                                 <p>No notifications yet</p>
                             </div>
                         ) : (
-                            notifications.map((notification) => (
-                                <div
-                                    key={notification.id}
-                                    className={`px-4 py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
-                                        ${!notification.isRead ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
-                                >
-                                    <div className="flex items-start space-x-3">
-                                        <span className="text-xl mt-1">
-                                            {getNotificationIcon(notification.type)}
-                                        </span>
-                                        <div className="flex-1 min-w-0">
-                                            <p className={`text-sm ${!notification.isRead ? 'font-medium' : ''} text-gray-800 dark:text-white`}>
-                                                {notification.title}
-                                            </p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                                                {notification.message}
-                                            </p>
-                                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                                {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center space-x-1">
-                                            {!notification.isRead && (
+                            <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-700">
+                                {notifications.map((notification) => (
+                                    <li
+                                        role="listitem"
+                                        key={notification.id}
+                                        className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
+                                            ${!notification.isRead ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
+                                    >
+                                        <div className="flex items-start space-x-3">
+                                            <span className="text-xl mt-1">
+                                                {getNotificationIcon(notification.type)}
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                                <p className={`text-sm ${!notification.isRead ? 'font-medium' : ''} text-gray-800 dark:text-white`}>
+                                                    {notification.title}
+                                                </p>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                                                    {notification.message}
+                                                </p>
+                                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                                    {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center space-x-1">
+                                                {!notification.isRead && (
+                                                    <button
+                                                        onClick={() => markAsRead(notification.id)}
+                                                        className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                                                        aria-label={language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark as read'}
+                                                    >
+                                                        <Check size={16} />
+                                                    </button>
+                                                )}
                                                 <button
-                                                    onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                                                    title="Mark as read"
+                                                    onClick={() => deleteNotification(notification.id)}
+                                                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                                    aria-label={t('common.delete')}
                                                 >
-                                                    <Check size={16} />
+                                                    <Trash2 size={16} />
                                                 </button>
-                                            )}
-                                            <button
-                                                onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                                title="Delete"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            ))
+                                    </li>
+                                ))}
+                            </ul>
                         )}
                     </div>
 
                     {notifications.length > 0 && (
                         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80">
+                            <button
+                                className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80"
+                                aria-label={t('notification.viewAll')}
+                            >
                                 View all notifications
                             </button>
                         </div>
