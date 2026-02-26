@@ -29,19 +29,67 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [shortcutLabel, setShortcutLabel] = useState('Ctrl K');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        setSelectedIndex(-1);
+    }, [results]);
+
+    useEffect(() => {
+        if (typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)) {
+            setShortcutLabel('⌘K');
+        }
+
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+        };
+
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
 
+        document.addEventListener('keydown', handleGlobalKeyDown);
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('keydown', handleGlobalKeyDown);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!isOpen) {
+            if (e.key === 'ArrowDown' && results.length > 0) {
+                setIsOpen(true);
+            }
+            return;
+        }
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setSelectedIndex(prev => (prev < results.length - 1 ? prev + 1 : prev));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedIndex >= 0 && results[selectedIndex]) {
+                handleSelect(results[selectedIndex]);
+            }
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            setIsOpen(false);
+            inputRef.current?.blur();
+        }
+    };
 
     useEffect(() => {
         const searchTasks = async () => {
@@ -116,14 +164,23 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     onFocus={() => setIsOpen(true)}
+                    onKeyDown={handleKeyDown}
                     placeholder={language === 'vi' ? 'Tìm kiếm công việc...' : 'Search tasks...'}
                     aria-label={language === 'vi' ? 'Tìm kiếm công việc' : 'Search tasks'}
                     aria-expanded={isOpen && (searchText.length >= 2 || results.length > 0)}
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
+                    aria-activedescendant={selectedIndex >= 0 ? `task-result-${results[selectedIndex]?.id}` : undefined}
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-12 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center pointer-events-none text-gray-400 select-none">
+                        <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:text-gray-400">
+                            {shortcutLabel}
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
@@ -162,12 +219,18 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                             <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
                                 {results.length} {language === 'vi' ? 'kết quả' : 'results'}
                             </div>
-                            {results.map((task) => (
+                            {results.map((task, index) => (
                                 <button
                                     key={task.id}
+                                    id={`task-result-${task.id}`}
                                     onClick={() => handleSelect(task)}
                                     role="option"
-                                    className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                                    aria-selected={index === selectedIndex}
+                                    className={`w-full px-3 py-3 transition-colors text-left ${
+                                        index === selectedIndex
+                                            ? 'bg-gray-100 dark:bg-gray-700'
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                                    }`}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 min-w-0">
