@@ -39,8 +39,25 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
             }
         };
 
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+            // Close on Escape
+            if (event.key === 'Escape') {
+                setIsOpen(false);
+                inputRef.current?.blur();
+            }
+        };
+
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, []);
 
     useEffect(() => {
@@ -116,8 +133,8 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     onFocus={() => setIsOpen(true)}
-                    placeholder={language === 'vi' ? 'Tìm kiếm công việc...' : 'Search tasks...'}
-                    aria-label={language === 'vi' ? 'Tìm kiếm công việc' : 'Search tasks'}
+                    placeholder={language === 'vi' ? 'Tìm kiếm công việc... (Ctrl+K)' : 'Search tasks... (Ctrl+K)'}
+                    aria-label={language === 'vi' ? 'Tìm kiếm công việc (Ctrl+K)' : 'Search tasks (Ctrl+K)'}
                     aria-expanded={isOpen && (searchText.length >= 2 || results.length > 0)}
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
