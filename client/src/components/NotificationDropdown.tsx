@@ -66,11 +66,12 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={totalBadgeCount > 0 ? `Notifications, ${totalBadgeCount} unread` : 'Notifications'}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} aria-hidden="true" />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center" aria-hidden="true">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
@@ -94,15 +95,15 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-500"
                             >
                                 <div className="flex items-start space-x-3">
-                                    <AlertCircle size={20} className="text-orange-500 mt-0.5" />
+                                    <AlertCircle size={20} className="text-orange-500 mt-0.5" aria-hidden="true" />
                                     <div className="flex-1">
                                         <p className="text-sm font-medium text-gray-800 dark:text-white">
                                             {language === 'vi' ? 'Công việc cần giao' : 'Tasks need assignment'}
@@ -115,7 +116,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
