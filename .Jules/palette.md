@@ -1,3 +1,3 @@
-## 2026-02-01 - [Search Component Accessibility]
-**Learning:** Custom search dropdowns using divs and buttons often lack semantic ARIA roles (combobox/listbox) and accessible labels for icon-only buttons (like Clear/Search).
-**Action:** Always verify custom interactive components with ARIA roles and ensure all icon-only buttons have descriptive aria-labels.
+## 2024-03-06 - Add Keyboard Shortcut to Search Input
+**Learning:** Adding a keyboard shortcut hint (<kbd>Cmd/Ctrl K</kbd>) dynamically into a search bar drastically improves discoverability. We must account for OS differences (Mac vs. Windows/Linux) to provide the correct modifier key (⌘ vs Ctrl) using navigator.platform. Also, dynamically adjusting the input's right padding based on the presence of search text is necessary so that the input text does not overlap with the absolute-positioned hint or the "clear search" (X) button.
+**Action:** When adding global search shortcuts, always include a visual hint inside the input element itself. Detect the OS to show the correct modifier key symbol, and ensure CSS padding dynamically accommodates the hint when empty and the clear button when populated.
