@@ -29,8 +29,23 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMac, setIsMac] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -124,7 +139,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     role="combobox"
                     className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
-                {searchText && (
+                {searchText ? (
                     <button
                         onClick={() => {
                             setSearchText('');
@@ -136,6 +151,15 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     >
                         <X size={16} />
                     </button>
+                ) : (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center space-x-1 pointer-events-none">
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-200 dark:bg-gray-600 dark:text-gray-400 rounded border border-gray-300 dark:border-gray-500">
+                            {isMac ? '⌘' : 'Ctrl'}
+                        </kbd>
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-200 dark:bg-gray-600 dark:text-gray-400 rounded border border-gray-300 dark:border-gray-500">
+                            K
+                        </kbd>
+                    </div>
                 )}
             </div>
 
