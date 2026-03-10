@@ -1,3 +1,3 @@
-## 2026-02-01 - [Search Component Accessibility]
-**Learning:** Custom search dropdowns using divs and buttons often lack semantic ARIA roles (combobox/listbox) and accessible labels for icon-only buttons (like Clear/Search).
-**Action:** Always verify custom interactive components with ARIA roles and ensure all icon-only buttons have descriptive aria-labels.
+## 2024-05-15 - Dynamic Keyboard Shortcuts
+**Learning:** For UI elements displaying keyboard shortcut hints (like search bars), checking `navigator.platform` is essential to dynamically display 'Cmd' on Mac environments and 'Ctrl' on Windows/Linux environments. This prevents confusion for non-Mac users seeing 'Cmd+K' and vice-versa, enhancing accessibility and UX.
+**Action:** When implementing global keyboard shortcuts, use `navigator.platform` to tailor the visual hint text, maintaining clear and accurate instructions across OS platforms.
