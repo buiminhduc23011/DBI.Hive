@@ -65,12 +65,20 @@ export const NotificationDropdown: React.FC = () => {
     return (
         <div className="relative" ref={dropdownRef}>
             <button
+                type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                aria-label={
+                    language === 'vi'
+                        ? `Thông báo, ${totalBadgeCount} chưa đọc`
+                        : `Notifications, ${totalBadgeCount} unread`
+                }
+                aria-expanded={isOpen}
+                aria-haspopup="dialog"
+                className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary"
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} aria-hidden="true" className={unassignedCount > 0 ? 'animate-pulse' : ''} />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
@@ -82,10 +90,11 @@ export const NotificationDropdown: React.FC = () => {
                         <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
                         {unreadCount > 0 && (
                             <button
+                                type="button"
                                 onClick={() => markAllAsRead()}
-                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
+                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1 focus-visible:outline-none focus-visible:underline rounded"
                             >
-                                <CheckCheck size={16} />
+                                <CheckCheck size={16} aria-hidden="true" />
                                 <span>Mark all read</span>
                             </button>
                         )}
@@ -94,12 +103,13 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
+                                type="button"
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer focus-visible:outline-none focus-visible:bg-orange-100 dark:focus-visible:bg-orange-900/30"
                             >
                                 <div className="flex items-start space-x-3">
                                     <AlertCircle size={20} className="text-orange-500 mt-0.5" />
@@ -115,7 +125,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
@@ -148,19 +158,23 @@ export const NotificationDropdown: React.FC = () => {
                                         <div className="flex items-center space-x-1">
                                             {!notification.isRead && (
                                                 <button
+                                                    type="button"
                                                     onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary rounded"
                                                     title="Mark as read"
+                                                    aria-label="Mark as read"
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
+                                                type="button"
                                                 onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary rounded"
                                                 title="Delete"
+                                                aria-label="Delete notification"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
@@ -171,7 +185,7 @@ export const NotificationDropdown: React.FC = () => {
 
                     {notifications.length > 0 && (
                         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80">
+                            <button type="button" className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80 focus-visible:outline-none focus-visible:underline rounded">
                                 View all notifications
                             </button>
                         </div>
