@@ -68,34 +68,34 @@ builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 // JWT Authentication
 // =======================
 var jwtSecret = builder.Configuration["Jwt:Secret"]
-    ?? "DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security";
+                ?? "DBI_Task_Secret_Key_Min_32_Characters_Required_For_Security";
 
 var key = Encoding.ASCII.GetBytes(jwtSecret);
 
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
 
-        ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "DBI.Task.API",
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "DBI.Task.API",
 
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "DBI.Task.Client",
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "DBI.Task.Client",
 
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization();
 
@@ -120,6 +120,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IProjectReportService, ProjectReportService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddHostedService<NotificationBackgroundService>();

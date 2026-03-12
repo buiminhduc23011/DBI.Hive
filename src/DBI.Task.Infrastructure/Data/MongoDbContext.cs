@@ -13,6 +13,7 @@ public interface IMongoDbContext
     IMongoCollection<Attachment> Attachments { get; }
     IMongoCollection<Notification> Notifications { get; }
     IMongoCollection<ActivityLog> ActivityLogs { get; }
+    IMongoCollection<ProjectReport> ProjectReports { get; }
     IMongoCollection<T> GetCollection<T>(string name);
 }
 
@@ -24,7 +25,7 @@ public class MongoDbContext : IMongoDbContext
     {
         var client = new MongoClient(settings.ConnectionString);
         _database = client.GetDatabase(settings.DatabaseName);
-        
+
         // Create indexes
         CreateIndexes();
     }
@@ -37,6 +38,7 @@ public class MongoDbContext : IMongoDbContext
     public IMongoCollection<Attachment> Attachments => _database.GetCollection<Attachment>("attachments");
     public IMongoCollection<Notification> Notifications => _database.GetCollection<Notification>("notifications");
     public IMongoCollection<ActivityLog> ActivityLogs => _database.GetCollection<ActivityLog>("activityLogs");
+    public IMongoCollection<ProjectReport> ProjectReports => _database.GetCollection<ProjectReport>("projectReports");
 
     public IMongoCollection<T> GetCollection<T>(string name) => _database.GetCollection<T>(name);
 

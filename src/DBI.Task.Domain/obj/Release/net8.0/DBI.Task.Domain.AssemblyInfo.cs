@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DBI.Task.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+559c08ad59ac0e66451ea9ac03ed4a9630a6ab19")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a70c138df0360c65944a977db57cc8d62eb668d")]
 [assembly: System.Reflection.AssemblyProductAttribute("DBI.Task.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DBI.Task.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

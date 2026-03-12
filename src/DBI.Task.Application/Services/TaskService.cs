@@ -14,6 +14,7 @@ public interface ITaskService
     System.Threading.Tasks.Task<TaskDto?> UpdateTaskAsync(string id, UpdateTaskRequest request, string userId);
     System.Threading.Tasks.Task<bool> DeleteTaskAsync(string id);
     System.Threading.Tasks.Task<IEnumerable<TaskDto>> GetBacklogTasksAsync(string? projectId, string userId);
+    System.Threading.Tasks.Task<IEnumerable<ActivityLog>> GetTaskHistoryAsync(string taskId);
 }
 
 public class TaskService : ITaskService
@@ -320,6 +321,15 @@ public class TaskService : ITaskService
             .ToListAsync();
 
         return tasks.Select(t => MapToDto(t)).ToList();
+    }
+
+    public async System.Threading.Tasks.Task<IEnumerable<ActivityLog>> GetTaskHistoryAsync(string taskId)
+    {
+        var logs = await _context.ActivityLogs
+            .Find(l => l.EntityType == "Task" && l.EntityId == taskId)
+            .SortByDescending(l => l.CreatedAt)
+            .ToListAsync();
+        return logs;
     }
 
     private TaskDto MapToDto(TaskItem task, int? commentCount = null, int? attachmentCount = null)

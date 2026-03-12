@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, FolderKanban, MoreVertical, Edit2, Trash2, Archive, Users } from 'lucide-react';
+import { Plus, FolderKanban, MoreVertical, Edit2, Trash2, Archive, Users, FileText, History as HistoryIcon } from 'lucide-react';
 import { useProjectStore, Project } from '../stores/projectStore';
 import { useI18nStore } from '../stores/i18nStore';
 import { useAuthStore } from '../stores/authStore';
 import { ProjectMembers } from '../components/ProjectMembers';
+import { ProjectReportModal } from '../components/ProjectReportModal';
+import { ProjectHistoryModal } from '../components/ProjectHistoryModal';
 
 export const Projects: React.FC = () => {
     const { projects, fetchProjects, createProject, updateProject, deleteProject, isLoading } = useProjectStore();
@@ -15,6 +17,8 @@ export const Projects: React.FC = () => {
     const [openMenu, setOpenMenu] = useState<string | null>(null);
     const [showArchived, setShowArchived] = useState(false);
     const [selectedProjectForMembers, setSelectedProjectForMembers] = useState<Project | null>(null);
+    const [reportProject, setReportProject] = useState<Project | null>(null);
+    const [historyProject, setHistoryProject] = useState<Project | null>(null);
 
     useEffect(() => {
         fetchProjects(showArchived);
@@ -136,50 +140,70 @@ export const Projects: React.FC = () => {
                                     const isOwner = project.ownerId === user?.id;
                                     const isManager = project.memberRoles?.[user?.id || ''] === 'Manager';
                                     const canManage = isOwner || isManager;
-                                    
+
                                     return (
-                                    <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10">
-                                        {canManage && (
-                                            <>
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedProjectForMembers(project);
-                                                        setOpenMenu(null);
-                                                    }}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
-                                                >
-                                                    <Users size={16} />
-                                                    <span>{t('project.manageMembers')}</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => openEditModal(project)}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
-                                                >
-                                                    <Edit2 size={16} />
-                                                    <span>{t('common.edit')}</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => handleArchive(project)}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
-                                                >
-                                                    <Archive size={16} />
-                                                    <span>{project.isArchived ? t('project.unarchive') : t('project.archive')}</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(project.id)}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 text-red-600"
-                                                >
-                                                    <Trash2 size={16} />
-                                                    <span>{t('common.delete')}</span>
-                                                </button>
-                                            </>
-                                        )}
-                                        {!canManage && (
-                                            <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-                                                {t('project.noPermission')}
-                                            </div>
-                                        )}
-                                    </div>
+                                        <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10">
+                                            {canManage && (
+                                                <>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedProjectForMembers(project);
+                                                            setOpenMenu(null);
+                                                        }}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
+                                                    >
+                                                        <Users size={16} />
+                                                        <span>{t('project.manageMembers')}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setReportProject(project);
+                                                            setOpenMenu(null);
+                                                        }}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
+                                                    >
+                                                        <FileText size={16} />
+                                                        <span>{t('project.reportProgress') || 'Report Progress'}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setHistoryProject(project);
+                                                            setOpenMenu(null);
+                                                        }}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
+                                                    >
+                                                        <HistoryIcon size={16} />
+                                                        <span>{t('project.viewHistory') || 'View History'}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openEditModal(project)}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                        <span>{t('common.edit')}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleArchive(project)}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 dark:text-gray-200"
+                                                    >
+                                                        <Archive size={16} />
+                                                        <span>{project.isArchived ? t('project.unarchive') : t('project.archive')}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(project.id)}
+                                                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2 text-red-600"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        <span>{t('common.delete')}</span>
+                                                    </button>
+                                                </>
+                                            )}
+                                            {!canManage && (
+                                                <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                                    {t('project.noPermission')}
+                                                </div>
+                                            )}
+                                        </div>
                                     );
                                 })()}
                             </div>
@@ -282,6 +306,26 @@ export const Projects: React.FC = () => {
                     project={selectedProjectForMembers}
                     isOpen={!!selectedProjectForMembers}
                     onClose={() => setSelectedProjectForMembers(null)}
+                />
+            )}
+
+
+            {/* Project Report Modal */}
+            {reportProject && (
+                <ProjectReportModal
+                    project={reportProject}
+                    isOpen={!!reportProject}
+                    onClose={() => setReportProject(null)}
+                    onSuccess={() => fetchProjects(showArchived)}
+                />
+            )}
+
+            {/* Project History Modal */}
+            {historyProject && (
+                <ProjectHistoryModal
+                    project={historyProject}
+                    isOpen={!!historyProject}
+                    onClose={() => setHistoryProject(null)}
                 />
             )}
         </div>

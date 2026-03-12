@@ -57,7 +57,7 @@ public class TasksController : ControllerBase
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
         var task = await _taskService.UpdateTaskAsync(id, request, userId);
-        
+
         if (task == null)
             return NotFound();
 
@@ -72,5 +72,12 @@ public class TasksController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [HttpGet("{id}/history")]
+    public async System.Threading.Tasks.Task<IActionResult> GetTaskHistory(string id)
+    {
+        var history = await _taskService.GetTaskHistoryAsync(id);
+        return Ok(history);
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {}
+    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {}
   },
   "projects": {
-    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
+    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
         "projectName": "DBI.Task.Domain",
-        "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
+        "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj",
         "packagesPath": "C:\\Users\\ducbu\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\obj\\",
+        "outputPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -76,14 +76,14 @@
         }
       }
     },
-    "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
+    "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
         "projectName": "DBI.Task.Infrastructure",
-        "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\DBI.Task.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\ducbu\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -105,8 +105,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
-                "projectPath": "c:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
+              "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj": {
+                "projectPath": "C:\\Users\\ducbu\\Documents\\GitHub\\DBI.Hive\\src\\DBI.Task.Domain\\DBI.Task.Domain.csproj"
               }
             }
           }
