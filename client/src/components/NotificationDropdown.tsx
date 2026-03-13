@@ -66,20 +66,24 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={totalBadgeCount > 0 ? `Notifications, ${totalBadgeCount} unread` : 'Notifications'}
+                aria-expanded={isOpen}
+                aria-haspopup="dialog"
+                aria-controls="notification-dropdown"
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} aria-hidden="true" className={unassignedCount > 0 ? 'animate-pulse' : ''} />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                <div id="notification-dropdown" role="dialog" aria-labelledby="notification-dropdown-title" className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                        <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                        <h3 id="notification-dropdown-title" className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
