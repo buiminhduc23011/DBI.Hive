@@ -67,10 +67,11 @@ export const NotificationDropdown: React.FC = () => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                aria-label={totalBadgeCount > 0 ? (language === 'vi' ? `Thông báo, ${totalBadgeCount} chưa đọc` : `Notifications, ${totalBadgeCount} unread`) : (language === 'vi' ? 'Thông báo' : 'Notifications')}
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} aria-hidden="true" />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
@@ -151,16 +152,18 @@ export const NotificationDropdown: React.FC = () => {
                                                     onClick={() => markAsRead(notification.id)}
                                                     className="p-1 text-gray-400 hover:text-green-600 transition-colors"
                                                     title="Mark as read"
+                                                    aria-label="Mark as read"
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
                                                 className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                                                 title="Delete"
+                                                aria-label="Delete"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
