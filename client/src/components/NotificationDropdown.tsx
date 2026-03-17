@@ -67,8 +67,10 @@ export const NotificationDropdown: React.FC = () => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                aria-label={language === 'vi' ? `Thông báo, ${totalBadgeCount} chưa đọc` : `Notifications, ${totalBadgeCount} unread`}
+                aria-expanded={isOpen}
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell aria-hidden="true" size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
                 {totalBadgeCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
