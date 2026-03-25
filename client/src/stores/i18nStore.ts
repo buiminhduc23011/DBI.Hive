@@ -152,7 +152,10 @@ const translations: Translations = {
 
     // Notifications
     'notification.title': { en: 'Notifications', vi: 'Thông báo' },
-    'notification.markAllRead': { en: 'Mark all read', vi: 'Đánh dấu đã đọc' },
+    'notification.unread': { en: 'unread', vi: 'chưa đọc' },
+    'notification.markAllRead': { en: 'Mark all read', vi: 'Đánh dấu tất cả đã đọc' },
+    'notification.markAsRead': { en: 'Mark as read', vi: 'Đánh dấu đã đọc' },
+    'notification.delete': { en: 'Delete', vi: 'Xóa' },
     'notification.noNotifications': { en: 'No notifications yet', vi: 'Chưa có thông báo' },
     'notification.viewAll': { en: 'View all notifications', vi: 'Xem tất cả thông báo' },
     'notification.emailNotifications': { en: 'Email Notifications', vi: 'Thông báo qua Email' },

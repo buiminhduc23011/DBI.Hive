@@ -21,7 +21,7 @@ export const NotificationDropdown: React.FC = () => {
     } = useNotificationStore();
     const { tasks, projects } = useProjectStore();
     const { user } = useAuthStore();
-    const { language } = useI18nStore();
+    const { language, t } = useI18nStore();
     
     // Calculate unassigned tasks for owners/managers
     const unassignedTasks = tasks.filter(t => !t.assignedToId && t.status !== 3);
@@ -66,11 +66,13 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={totalBadgeCount > 0 ? `${t('notification.title')}, ${totalBadgeCount} ${t('notification.unread')}` : t('notification.title')}
+                aria-expanded={isOpen}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} aria-hidden="true" className={unassignedCount > 0 ? 'animate-pulse' : ''} />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span aria-hidden="true" className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
@@ -85,8 +87,8 @@ export const NotificationDropdown: React.FC = () => {
                                 onClick={() => markAllAsRead()}
                                 className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
                             >
-                                <CheckCheck size={16} />
-                                <span>Mark all read</span>
+                                <CheckCheck size={16} aria-hidden="true" />
+                                <span>{t('notification.markAllRead')}</span>
                             </button>
                         )}
                     </div>
@@ -150,17 +152,19 @@ export const NotificationDropdown: React.FC = () => {
                                                 <button
                                                     onClick={() => markAsRead(notification.id)}
                                                     className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                                                    title="Mark as read"
+                                                    title={t('notification.markAsRead')}
+                                                    aria-label={t('notification.markAsRead')}
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
                                                 className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                                title="Delete"
+                                                title={t('notification.delete')}
+                                                aria-label={t('notification.delete')}
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
