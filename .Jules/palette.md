@@ -1,3 +1,4 @@
 ## 2026-02-01 - [Search Component Accessibility]
 **Learning:** Custom search dropdowns using divs and buttons often lack semantic ARIA roles (combobox/listbox) and accessible labels for icon-only buttons (like Clear/Search).
 **Action:** Always verify custom interactive components with ARIA roles and ensure all icon-only buttons have descriptive aria-labels.
+\n## 2024-05-24 - Screen Reader Redundancy in Icon Buttons\n**Learning:** When adding an `aria-label` to an icon-only button, screen readers may announce both the `aria-label` AND the internal accessible name of the SVG icon (e.g., Lucide icons). This creates confusing, redundant announcements for users relying on assistive technology.\n**Action:** Always add `aria-hidden="true"` to decorative or internal icons (like `<Bell />`, `<Trash2 />`, etc.) inside a button when you provide an `aria-label` on the parent `<button>` element.
