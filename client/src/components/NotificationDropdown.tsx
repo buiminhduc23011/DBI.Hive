@@ -67,26 +67,37 @@ export const NotificationDropdown: React.FC = () => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                aria-label={`${language === 'vi' ? 'Thông báo' : 'Notifications'}, ${totalBadgeCount} ${language === 'vi' ? 'chưa đọc' : 'unread'}`}
+                aria-expanded={isOpen}
+                aria-haspopup="dialog"
             >
-                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} />
+                <Bell size={22} className={unassignedCount > 0 ? 'animate-pulse' : ''} aria-hidden="true" />
                 {totalBadgeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
+                        aria-hidden="true"
+                    >
                         {totalBadgeCount > 9 ? '9+' : totalBadgeCount}
                     </span>
                 )}
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                <div
+                    role="dialog"
+                    aria-label={language === 'vi' ? 'Danh sách thông báo' : 'Notifications list'}
+                    className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
+                >
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                        <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-white">{language === 'vi' ? 'Thông báo' : 'Notifications'}</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
-                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
+                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded px-1"
+                                aria-label={language === 'vi' ? 'Đánh dấu tất cả đã đọc' : 'Mark all as read'}
                             >
-                                <CheckCheck size={16} />
-                                <span>Mark all read</span>
+                                <CheckCheck size={16} aria-hidden="true" />
+                                <span>{language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark all read'}</span>
                             </button>
                         )}
                     </div>
@@ -94,15 +105,16 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
+                                type="button"
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
                             >
                                 <div className="flex items-start space-x-3">
-                                    <AlertCircle size={20} className="text-orange-500 mt-0.5" />
+                                    <AlertCircle size={20} className="text-orange-500 mt-0.5" aria-hidden="true" />
                                     <div className="flex-1">
                                         <p className="text-sm font-medium text-gray-800 dark:text-white">
                                             {language === 'vi' ? 'Công việc cần giao' : 'Tasks need assignment'}
@@ -115,7 +127,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
@@ -149,18 +161,20 @@ export const NotificationDropdown: React.FC = () => {
                                             {!notification.isRead && (
                                                 <button
                                                     onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                                                    title="Mark as read"
+                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
+                                                    aria-label={language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark as read'}
+                                                    title={language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark as read'}
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                                title="Delete"
+                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
+                                                aria-label={language === 'vi' ? 'Xóa' : 'Delete'}
+                                                title={language === 'vi' ? 'Xóa' : 'Delete'}
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
@@ -171,8 +185,8 @@ export const NotificationDropdown: React.FC = () => {
 
                     {notifications.length > 0 && (
                         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80">
-                                View all notifications
+                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded px-2 py-1">
+                                {language === 'vi' ? 'Xem tất cả thông báo' : 'View all notifications'}
                             </button>
                         </div>
                     )}
