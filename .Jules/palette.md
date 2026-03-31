@@ -1,3 +1,7 @@
-## 2026-02-01 - [Search Component Accessibility]
-**Learning:** Custom search dropdowns using divs and buttons often lack semantic ARIA roles (combobox/listbox) and accessible labels for icon-only buttons (like Clear/Search).
-**Action:** Always verify custom interactive components with ARIA roles and ensure all icon-only buttons have descriptive aria-labels.
+## 2024-03-09 - OS-aware Keyboard Shortcuts
+**Learning:** Adding visual hints for keyboard shortcuts like Cmd+K (Mac) or Ctrl+K (Windows) significantly improves feature discoverability. Using `navigator.platform` allows displaying the correct modifier key symbol (`⌘` vs `Ctrl`), which reduces user confusion. This must be evaluated dynamically on the client side.
+**Action:** When adding global search or specific shortcut-driven features, implement OS-aware rendering for the shortcut `<kbd>` hints.
+
+## 2024-03-09 - OS-aware Keyboard Shortcuts
+**Learning:** Adding visual hints for keyboard shortcuts like Cmd+K (Mac) or Ctrl+K (Windows) significantly improves feature discoverability. Using `navigator.platform` allows displaying the correct modifier key symbol (`⌘` vs `Ctrl`), which reduces user confusion. This must be evaluated dynamically on the client side.
+**Action:** When adding global search or specific shortcut-driven features, implement OS-aware rendering for the shortcut `<kbd>` hints.

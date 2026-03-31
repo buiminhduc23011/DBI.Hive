@@ -29,8 +29,23 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMac, setIsMac] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -122,8 +137,18 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-16 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1 text-xs text-gray-400 dark:text-gray-500 pointer-events-none select-none">
+                        <kbd className="px-1.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 font-sans shadow-sm">
+                            {isMac ? '⌘' : 'Ctrl'}
+                        </kbd>
+                        <kbd className="px-1.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 font-sans shadow-sm">
+                            K
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
