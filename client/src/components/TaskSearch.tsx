@@ -29,8 +29,10 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -68,11 +70,40 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         return () => clearTimeout(debounce);
     }, [searchText]);
 
+    useEffect(() => {
+        itemsRef.current = itemsRef.current.slice(0, results.length);
+        setActiveIndex(-1);
+    }, [results]);
+
+    useEffect(() => {
+        if (activeIndex >= 0 && itemsRef.current[activeIndex]) {
+            itemsRef.current[activeIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+    }, [activeIndex]);
+
     const handleSelect = (task: Task) => {
         onTaskSelect(task);
         setIsOpen(false);
         setSearchText('');
         setResults([]);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!isOpen) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveIndex(prev => (prev < results.length - 1 ? prev + 1 : -1));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveIndex(prev => (prev > -1 ? prev - 1 : results.length - 1));
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            handleSelect(results[activeIndex]);
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            setIsOpen(false);
+            inputRef.current?.blur();
+        }
     };
 
     const getPriorityLabel = (priority: Priority) => {
@@ -114,13 +145,18 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     ref={inputRef}
                     type="text"
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    onChange={(e) => {
+                        setSearchText(e.target.value);
+                        setIsOpen(true);
+                    }}
                     onFocus={() => setIsOpen(true)}
+                    onKeyDown={handleKeyDown}
                     placeholder={language === 'vi' ? 'Tìm kiếm công việc...' : 'Search tasks...'}
                     aria-label={language === 'vi' ? 'Tìm kiếm công việc' : 'Search tasks'}
                     aria-expanded={isOpen && (searchText.length >= 2 || results.length > 0)}
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
+                    aria-activedescendant={activeIndex >= 0 ? `task-result-${activeIndex}` : undefined}
                     role="combobox"
                     className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
@@ -162,12 +198,19 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                             <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
                                 {results.length} {language === 'vi' ? 'kết quả' : 'results'}
                             </div>
-                            {results.map((task) => (
+                            {results.map((task, index) => (
                                 <button
                                     key={task.id}
+                                    ref={(el) => { itemsRef.current[index] = el; }}
+                                    id={`task-result-${index}`}
                                     onClick={() => handleSelect(task)}
                                     role="option"
-                                    className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                                    aria-selected={index === activeIndex}
+                                    className={`w-full px-3 py-3 transition-colors text-left ${
+                                        index === activeIndex
+                                            ? 'bg-gray-100 dark:bg-gray-700'
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                                    }`}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 min-w-0">
