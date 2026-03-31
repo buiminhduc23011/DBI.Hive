@@ -13,6 +13,7 @@ interface Translations {
 const translations: Translations = {
     // Common
     'common.save': { en: 'Save', vi: 'Lưu' },
+    'common.send': { en: 'Send', vi: 'Gửi' },
     'common.cancel': { en: 'Cancel', vi: 'Hủy' },
     'common.close': { en: 'Close', vi: 'Đóng' },
     'common.delete': { en: 'Delete', vi: 'Xóa' },
