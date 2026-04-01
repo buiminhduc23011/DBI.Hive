@@ -33,6 +33,18 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -122,7 +134,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-12 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
                 {searchText && (
                     <button
@@ -136,6 +148,13 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     >
                         <X size={16} />
                     </button>
+                )}
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex pointer-events-none">
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 rounded border border-gray-300 dark:border-gray-500">
+                            {navigator.platform.toLowerCase().includes('mac') ? '⌘K' : 'Ctrl K'}
+                        </kbd>
+                    </div>
                 )}
             </div>
 
