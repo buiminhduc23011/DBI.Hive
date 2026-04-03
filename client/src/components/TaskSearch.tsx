@@ -31,8 +31,21 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [isMac, setIsMac] = useState(false);
 
     useEffect(() => {
+        if (typeof navigator !== 'undefined') {
+            setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+        }
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -40,7 +53,10 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
     useEffect(() => {
@@ -108,8 +124,8 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     return (
         <div ref={containerRef} className="relative" data-onboarding="search-task">
             {/* Search Button/Input */}
-            <div className="relative">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div className="relative flex items-center group">
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
                 <input
                     ref={inputRef}
                     type="text"
@@ -122,8 +138,19 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-12 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && !isOpen && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-xs text-gray-400 dark:text-gray-500 font-medium">
+                        <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-600 rounded-md shadow-sm border border-gray-300 dark:border-gray-500">
+                            {isMac ? 'Cmd' : 'Ctrl'}
+                        </kbd>
+                        <span className="mx-0.5">+</span>
+                        <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-600 rounded-md shadow-sm border border-gray-300 dark:border-gray-500">
+                            K
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
@@ -134,7 +161,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                         aria-label={language === 'vi' ? 'Xóa tìm kiếm' : 'Clear search'}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                        <X size={16} />
+                        <X size={16} aria-hidden="true" />
                     </button>
                 )}
             </div>
@@ -185,12 +212,12 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                                         </div>
                                         <div className="ml-2 flex flex-col items-end text-xs text-gray-500 dark:text-gray-400">
                                             <div className="flex items-center space-x-1">
-                                                <Folder size={12} />
+                                                <Folder size={12} aria-hidden="true" />
                                                 <span className="truncate max-w-20">{task.projectName}</span>
                                             </div>
                                             {task.deadline && (
                                                 <div className="flex items-center space-x-1 mt-1">
-                                                    <Calendar size={12} />
+                                                    <Calendar size={12} aria-hidden="true" />
                                                     <span>{formatDate(task.deadline)}</span>
                                                 </div>
                                             )}
