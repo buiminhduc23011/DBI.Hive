@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useI18nStore } from '../stores/i18nStore';
 
 export const Login: React.FC = () => {
     const navigate = useNavigate();
-    const { login, isLoading, error } = useAuthStore();
+    const { login, isLoading, error, isAuthenticated } = useAuthStore();
     const { t, language, setLanguage } = useI18nStore();
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await login(emailOrUsername, password);
             navigate('/');
-        } catch (err) {
+        } catch {
             // Error handled in store
         }
     };
