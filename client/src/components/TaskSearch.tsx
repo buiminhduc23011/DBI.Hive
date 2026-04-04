@@ -44,6 +44,19 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     }, []);
 
     useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    useEffect(() => {
         const searchTasks = async () => {
             if (searchText.trim().length < 2) {
                 setResults([]);
@@ -105,6 +118,9 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         });
     };
 
+    const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+    const shortcutKey = isMac ? '⌘K' : 'Ctrl K';
+
     return (
         <div ref={containerRef} className="relative" data-onboarding="search-task">
             {/* Search Button/Input */}
@@ -122,8 +138,15 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-16 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && !isOpen && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none hidden md:flex items-center">
+                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-sans font-medium text-gray-500 bg-gray-200 dark:bg-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-500 rounded shadow-sm">
+                            {shortcutKey}
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
