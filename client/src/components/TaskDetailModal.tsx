@@ -231,9 +231,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                         )}
                         <button
                             onClick={onClose}
+                            aria-label={t('common.close') || 'Close'}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
-                            <X size={20} className="text-gray-600 dark:text-gray-400" />
+                            <X size={20} aria-hidden="true" className="text-gray-600 dark:text-gray-400" />
                         </button>
                     </div>
                 </div>
@@ -505,9 +506,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                         <button
                                             type="submit"
                                             disabled={isSubmitting || !newComment.trim()}
+                                            aria-label={language === 'vi' ? 'Gửi bình luận' : 'Send comment'}
                                             className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
                                         >
-                                            <Send size={18} />
+                                            <Send size={18} aria-hidden="true" />
                                         </button>
                                     </form>
                                 </div>

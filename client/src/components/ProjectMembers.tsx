@@ -13,7 +13,7 @@ interface ProjectMembersProps {
 export const ProjectMembers: React.FC<ProjectMembersProps> = ({ project, isOpen, onClose }) => {
     const { users, fetchUsers, addProjectMember, removeProjectMember } = useProjectStore();
     const { user } = useAuthStore();
-    const { language } = useI18nStore();
+    const { language, t } = useI18nStore();
     const [memberEmail, setMemberEmail] = useState('');
     const [memberRole, setMemberRole] = useState('Member');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,9 +76,10 @@ export const ProjectMembers: React.FC<ProjectMembersProps> = ({ project, isOpen,
                     </h2>
                     <button
                         onClick={onClose}
+                        aria-label={t('common.close') || 'Close'}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     >
-                        <X size={20} className="text-gray-600 dark:text-gray-400" />
+                        <X size={20} aria-hidden="true" className="text-gray-600 dark:text-gray-400" />
                     </button>
                 </div>
 
