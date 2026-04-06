@@ -227,9 +227,10 @@ export const InteractiveOnboarding: React.FC<InteractiveOnboardingProps> = ({ on
                 {/* Close button */}
                 <button
                     onClick={handleSkip}
+                    aria-label={t('common.close') || 'Close'}
                     className="absolute top-3 right-3 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
-                    <X size={16} />
+                    <X size={16} aria-hidden="true" />
                 </button>
 
                 {/* Content */}
