@@ -103,12 +103,13 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
+                                type="button"
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                             >
                                 <div className="flex items-start space-x-3">
                                     <AlertCircle size={20} className="text-orange-500 mt-0.5" />
@@ -124,7 +125,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
@@ -157,19 +158,23 @@ export const NotificationDropdown: React.FC = () => {
                                         <div className="flex items-center space-x-1">
                                             {!notification.isRead && (
                                                 <button
+                                                    type="button"
                                                     onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                                                     title="Mark as read"
+                                                    aria-label={language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark as read'}
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
+                                                type="button"
                                                 onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                                                 title="Delete"
+                                                aria-label={language === 'vi' ? 'Xóa thông báo' : 'Delete notification'}
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
