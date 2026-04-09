@@ -78,6 +78,18 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
         }
     }, [isOpen, task.id]);
 
+    // Close modal on Escape key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+
+        if (isOpen) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
+
     const fetchComments = async () => {
         setIsLoadingComments(true);
         try {
@@ -198,7 +210,12 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 lg:p-4">
+        <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 lg:p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="task-detail-title"
+        >
             <div className="bg-white dark:bg-gray-800 rounded-none lg:rounded-xl shadow-2xl w-full lg:max-w-3xl h-full lg:h-auto lg:max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -217,6 +234,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                     onClick={() => setIsEditing(!isEditing)}
                                     className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                                     title={t('common.edit')}
+                                    aria-label={t('common.edit')}
                                 >
                                     <Edit2 size={18} className="text-gray-600 dark:text-gray-400" />
                                 </button>
@@ -224,6 +242,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                     onClick={handleDeleteTask}
                                     className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                     title={t('common.delete')}
+                                    aria-label={t('common.delete')}
                                 >
                                     <Trash2 size={18} className="text-red-600 dark:text-red-400" />
                                 </button>
@@ -232,6 +251,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                         <button
                             onClick={onClose}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            aria-label={t('common.close')}
                         >
                             <X size={20} className="text-gray-600 dark:text-gray-400" />
                         </button>
@@ -249,9 +269,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                     value={editData.title}
                                     onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                                     className="w-full text-xl font-semibold bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 dark:text-white"
+                                    id="task-detail-title"
                                 />
                             ) : (
-                                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{task.title}</h2>
+                                <h2 id="task-detail-title" className="text-xl font-semibold text-gray-800 dark:text-white">{task.title}</h2>
                             )}
 
                             {isEditing ? (
@@ -481,6 +502,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                                                 <button
                                                                     onClick={() => handleDeleteComment(comment.id)}
                                                                     className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                                    aria-label={t('common.delete')}
                                                                 >
                                                                     <Trash2 size={14} />
                                                                 </button>
@@ -506,6 +528,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                             type="submit"
                                             disabled={isSubmitting || !newComment.trim()}
                                             className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
+                                            aria-label={language === 'vi' ? 'Gửi bình luận' : 'Send comment'}
                                         >
                                             <Send size={18} />
                                         </button>
