@@ -191,6 +191,7 @@ export const Dashboard: React.FC = () => {
                             data.todayTasks.map((task: any) => (
                                 <div
                                     key={task.id}
+                                    onClick={() => setSelectedTask(task)}
                                     className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer border-l-4 border-orange-500"
                                 >
                                     <p className="font-medium text-gray-800 dark:text-white">{task.title}</p>

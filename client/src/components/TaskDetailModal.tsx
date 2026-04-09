@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { X, Calendar, User, Flag, MessageSquare, Send, Trash2, Edit2, Check, Clock } from 'lucide-react';
 import { Task, TaskItemStatus, Priority, useProjectStore } from '../stores/projectStore';
 import { useAuthStore } from '../stores/authStore';
@@ -55,6 +55,18 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
         startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : '',
         deadline: task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : '',
     });
+
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        // Focus modal for accessibility
+        modalRef.current?.focus();
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
 
     // Check user role in project
     const taskProject = projects.find(p => p.id === task.projectId);
@@ -198,8 +210,19 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 lg:p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-none lg:rounded-xl shadow-2xl w-full lg:max-w-3xl h-full lg:h-auto lg:max-h-[90vh] overflow-hidden flex flex-col">
+        <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 lg:p-4"
+            onClick={onClose}
+        >
+            <div
+                ref={modalRef}
+                tabIndex={-1}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                className="bg-white dark:bg-gray-800 rounded-none lg:rounded-xl shadow-2xl w-full lg:max-w-3xl h-full lg:h-auto lg:max-h-[90vh] overflow-hidden flex flex-col outline-none"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
@@ -251,7 +274,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                     className="w-full text-xl font-semibold bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 dark:text-white"
                                 />
                             ) : (
-                                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{task.title}</h2>
+                                <h2 id="modal-title" className="text-xl font-semibold text-gray-800 dark:text-white">{task.title}</h2>
                             )}
 
                             {isEditing ? (
