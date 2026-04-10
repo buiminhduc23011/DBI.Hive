@@ -22,9 +22,10 @@ export const UnassignedTasksModal: React.FC<UnassignedTasksModalProps> = ({ task
                     </h2>
                     <button
                         onClick={onClose}
+                        aria-label={t('common.close')}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
                     >
-                        <X size={20} className="text-gray-500 dark:text-gray-400" />
+                        <X size={20} className="text-gray-500 dark:text-gray-400" aria-hidden="true" />
                     </button>
                 </div>
 
