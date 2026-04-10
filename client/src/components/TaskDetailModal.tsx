@@ -231,9 +231,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                         )}
                         <button
                             onClick={onClose}
+                            aria-label={t('common.close')}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
-                            <X size={20} className="text-gray-600 dark:text-gray-400" />
+                            <X size={20} className="text-gray-600 dark:text-gray-400" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
