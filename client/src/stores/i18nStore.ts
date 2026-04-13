@@ -13,6 +13,9 @@ interface Translations {
 const translations: Translations = {
     // Common
     'common.save': { en: 'Save', vi: 'Lưu' },
+    'common.deleteComment': { en: 'Delete comment', vi: 'Xóa bình luận' },
+    'common.submitComment': { en: 'Submit comment', vi: 'Gửi bình luận' },
+    'common.writeComment': { en: 'Write a comment...', vi: 'Viết bình luận...' },
     'common.cancel': { en: 'Cancel', vi: 'Hủy' },
     'common.close': { en: 'Close', vi: 'Đóng' },
     'common.delete': { en: 'Delete', vi: 'Xóa' },
