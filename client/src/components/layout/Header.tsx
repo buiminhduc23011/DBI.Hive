@@ -61,6 +61,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     <div className="relative">
                         <button
                             onClick={() => setShowUserMenu(!showUserMenu)}
+                            aria-expanded={showUserMenu}
+                            aria-haspopup="true"
                             className="flex items-center space-x-1 lg:space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
                         >
                             <div className="w-8 h-8 bg-dbi-primary rounded-full flex items-center justify-center text-white font-medium">
