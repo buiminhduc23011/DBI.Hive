@@ -443,6 +443,8 @@ export const KanbanBoard: React.FC = () => {
                     <div className="mt-2 relative">
                         <button
                             onClick={() => setShowProjectDropdown(!showProjectDropdown)}
+                            aria-expanded={showProjectDropdown}
+                            aria-haspopup="true"
                             className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors text-sm"
                         >
                             {selectedProject && (
