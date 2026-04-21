@@ -1,3 +1,4 @@
 ## 2026-02-01 - [Search Component Accessibility]
 **Learning:** Custom search dropdowns using divs and buttons often lack semantic ARIA roles (combobox/listbox) and accessible labels for icon-only buttons (like Clear/Search).
 **Action:** Always verify custom interactive components with ARIA roles and ensure all icon-only buttons have descriptive aria-labels.
+\n## 2026-02-02 - [Localization in Accessibility]\n**Learning:** When adding accessibility labels like aria-label or title to components, it is critical to reuse the existing i18n store translation functions (e.g., `t('common.close')`) rather than using hardcoded string literals or inline language conditionals, which harms maintainability and leads to runtime errors if `language` is uninitialized in the component scope.\n**Action:** Always scan for the nearest `t()` function or `useI18nStore` implementation and use it for any user-facing accessibility strings.
