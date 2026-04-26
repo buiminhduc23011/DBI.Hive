@@ -27,6 +27,7 @@ const translations: Translations = {
     'common.finish': { en: 'Finish', vi: 'Hoàn thành' },
     'common.skip': { en: 'Skip', vi: 'Bỏ qua' },
     'common.allProjects': { en: 'All Projects', vi: 'Tất cả dự án' },
+    'common.send': { en: 'Send', vi: 'Gửi' },
 
     // Auth
     'auth.login': { en: 'Sign In', vi: 'Đăng nhập' },
@@ -52,6 +53,7 @@ const translations: Translations = {
     'nav.backlog': { en: 'Backlog', vi: 'Backlog' },
     'nav.calendar': { en: 'Calendar', vi: 'Lịch' },
     'nav.settings': { en: 'Settings', vi: 'Cài đặt' },
+    'nav.userMenu': { en: 'User menu', vi: 'Menu người dùng' },
 
     // Dashboard
     'dashboard.title': { en: 'Dashboard', vi: 'Tổng quan' },
@@ -102,6 +104,7 @@ const translations: Translations = {
 
     // Projects
     'project.title': { en: 'Projects', vi: 'Dự án' },
+    'project.moreOptions': { en: 'More options', vi: 'Thêm tùy chọn' },
     'project.newProject': { en: 'New Project', vi: 'Tạo dự án' },
     'project.editProject': { en: 'Edit Project', vi: 'Sửa dự án' },
     'project.name': { en: 'Project Name', vi: 'Tên dự án' },

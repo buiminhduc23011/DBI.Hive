@@ -133,8 +133,9 @@ export const Settings: React.FC = () => {
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         className="absolute bottom-0 right-0 w-8 h-8 bg-dbi-primary rounded-full flex items-center justify-center text-white hover:bg-dbi-dark transition-colors shadow-lg"
+                                        aria-label={t('settings.changeAvatar')}
                                     >
-                                        <Camera size={16} />
+                                        <Camera size={16} aria-hidden="true" />
                                     </button>
                                     <input
                                         ref={fileInputRef}
