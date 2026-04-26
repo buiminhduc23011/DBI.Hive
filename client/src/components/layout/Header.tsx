@@ -62,12 +62,13 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <button
                             onClick={() => setShowUserMenu(!showUserMenu)}
                             className="flex items-center space-x-1 lg:space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
+                            aria-label={t('nav.userMenu')}
                         >
                             <div className="w-8 h-8 bg-dbi-primary rounded-full flex items-center justify-center text-white font-medium">
                                 {user?.fullName.charAt(0).toUpperCase()}
                             </div>
                             <span className="font-medium text-gray-700 dark:text-gray-200 hidden lg:block">{user?.fullName}</span>
-                            <ChevronDown size={16} className="text-gray-700 dark:text-gray-200 hidden lg:block" />
+                            <ChevronDown size={16} className="text-gray-700 dark:text-gray-200 hidden lg:block" aria-hidden="true" />
                         </button>
 
                         {showUserMenu && (

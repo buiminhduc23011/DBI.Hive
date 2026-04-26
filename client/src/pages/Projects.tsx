@@ -129,8 +129,9 @@ export const Projects: React.FC = () => {
                                 <button
                                     onClick={() => setOpenMenu(openMenu === project.id ? null : project.id)}
                                     className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                    aria-label={t('project.moreOptions')}
                                 >
-                                    <MoreVertical size={20} className="text-gray-500 dark:text-gray-400" />
+                                    <MoreVertical size={20} className="text-gray-500 dark:text-gray-400" aria-hidden="true" />
                                 </button>
                                 {openMenu === project.id && (() => {
                                     const isOwner = project.ownerId === user?.id;
