@@ -31,6 +31,29 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [modifierKey, setModifierKey] = useState<string>("");
+
+    useEffect(() => {
+        const determineModifierKey = () => {
+            if (typeof navigator !== "undefined" && navigator.platform) {
+                return navigator.platform.toLowerCase().includes("mac") ? "Cmd" : "Ctrl";
+            }
+            return "Ctrl";
+        };
+        setModifierKey(determineModifierKey());
+    }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -124,6 +147,12 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     role="combobox"
                     className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && modifierKey && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center space-x-1">
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-200 dark:bg-gray-600 rounded border border-gray-300 dark:border-gray-500">{modifierKey}</kbd>
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-200 dark:bg-gray-600 rounded border border-gray-300 dark:border-gray-500">K</kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
