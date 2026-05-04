@@ -46,6 +46,8 @@ const translations: Translations = {
     'auth.registerFailed': { en: 'Registration failed', vi: 'Đăng ký thất bại' },
 
     // Navigation
+    'common.deleteComment': { en: 'Delete comment', vi: 'Xóa bình luận' },
+    'common.sendComment': { en: 'Send comment', vi: 'Gửi bình luận' },
     'nav.dashboard': { en: 'Dashboard', vi: 'Tổng quan' },
     'nav.projects': { en: 'Projects', vi: 'Dự án' },
     'nav.kanban': { en: 'Kanban Board', vi: 'Bảng Kanban' },
