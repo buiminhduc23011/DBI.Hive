@@ -29,8 +29,31 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [modifierKey, setModifierKey] = useState('Ctrl');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const checkPlatform = () => {
+            if (typeof navigator !== 'undefined') {
+                const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+                setModifierKey(isMac ? 'Cmd' : 'Ctrl');
+            }
+        };
+        checkPlatform();
+    }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -109,7 +132,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
         <div ref={containerRef} className="relative" data-onboarding="search-task">
             {/* Search Button/Input */}
             <div className="relative">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
                 <input
                     ref={inputRef}
                     type="text"
@@ -122,8 +145,15 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className={`w-full md:w-64 pl-10 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary ${searchText ? 'pr-8' : 'pr-14'}`}
                 />
+                {!searchText && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                        <span className="hidden md:flex items-center justify-center px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-600 text-[10px] text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap shadow-sm">
+                            {modifierKey} K
+                        </span>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
@@ -132,9 +162,9 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                             inputRef.current?.focus();
                         }}
                         aria-label={language === 'vi' ? 'Xóa tìm kiếm' : 'Clear search'}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary rounded"
                     >
-                        <X size={16} />
+                        <X size={16} aria-hidden="true" />
                     </button>
                 )}
             </div>
@@ -148,7 +178,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                 >
                     {isLoading ? (
                         <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-dbi-primary mx-auto"></div>
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-dbi-primary mx-auto" aria-label="Loading"></div>
                         </div>
                     ) : results.length === 0 ? (
                         <div className="p-4 text-center text-gray-500 dark:text-gray-400">
@@ -167,7 +197,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                                     key={task.id}
                                     onClick={() => handleSelect(task)}
                                     role="option"
-                                    className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                                    className="w-full px-3 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left focus-visible:bg-gray-50 dark:focus-visible:bg-gray-700 focus-visible:outline-none"
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 min-w-0">
@@ -185,12 +215,12 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                                         </div>
                                         <div className="ml-2 flex flex-col items-end text-xs text-gray-500 dark:text-gray-400">
                                             <div className="flex items-center space-x-1">
-                                                <Folder size={12} />
+                                                <Folder size={12} aria-hidden="true" />
                                                 <span className="truncate max-w-20">{task.projectName}</span>
                                             </div>
                                             {task.deadline && (
                                                 <div className="flex items-center space-x-1 mt-1">
-                                                    <Calendar size={12} />
+                                                    <Calendar size={12} aria-hidden="true" />
                                                     <span>{formatDate(task.deadline)}</span>
                                                 </div>
                                             )}
