@@ -32,10 +32,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     {/* Hamburger menu - mobile only */}
                     <button
                         onClick={onMenuClick}
-                        className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary"
                         aria-label="Open menu"
                     >
-                        <Menu size={24} className="text-gray-700 dark:text-gray-200" />
+                        <Menu size={24} aria-hidden="true" className="text-gray-700 dark:text-gray-200" />
                     </button>
 
                     <div className="flex items-center space-x-2">
@@ -61,13 +61,16 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     <div className="relative">
                         <button
                             onClick={() => setShowUserMenu(!showUserMenu)}
-                            className="flex items-center space-x-1 lg:space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
+                            aria-label={`${t('nav.settings')}, ${user?.fullName}`}
+                            aria-expanded={showUserMenu}
+                            aria-haspopup="true"
+                            className="flex items-center space-x-1 lg:space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary"
                         >
-                            <div className="w-8 h-8 bg-dbi-primary rounded-full flex items-center justify-center text-white font-medium">
+                            <div className="w-8 h-8 bg-dbi-primary rounded-full flex items-center justify-center text-white font-medium" aria-hidden="true">
                                 {user?.fullName.charAt(0).toUpperCase()}
                             </div>
-                            <span className="font-medium text-gray-700 dark:text-gray-200 hidden lg:block">{user?.fullName}</span>
-                            <ChevronDown size={16} className="text-gray-700 dark:text-gray-200 hidden lg:block" />
+                            <span className="font-medium text-gray-700 dark:text-gray-200 hidden lg:block" aria-hidden="true">{user?.fullName}</span>
+                            <ChevronDown size={16} aria-hidden="true" className="text-gray-700 dark:text-gray-200 hidden lg:block" />
                         </button>
 
                         {showUserMenu && (
@@ -77,16 +80,16 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                         navigate('/settings');
                                         setShowUserMenu(false);
                                     }}
-                                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2 text-gray-800 dark:text-gray-200"
+                                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2 text-gray-800 dark:text-gray-200 focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700"
                                 >
-                                    <User size={16} />
+                                    <User size={16} aria-hidden="true" />
                                     <span>{t('nav.settings')}</span>
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2 text-red-600"
+                                    className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2 text-red-600 focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700"
                                 >
-                                    <LogOut size={16} />
+                                    <LogOut size={16} aria-hidden="true" />
                                     <span>{t('auth.logout')}</span>
                                 </button>
                             </div>
