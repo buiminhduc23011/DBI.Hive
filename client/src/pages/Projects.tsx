@@ -7,7 +7,7 @@ import { ProjectMembers } from '../components/ProjectMembers';
 
 export const Projects: React.FC = () => {
     const { projects, fetchProjects, createProject, updateProject, deleteProject, isLoading } = useProjectStore();
-    const { t } = useI18nStore();
+    const { t, language } = useI18nStore();
     const { user } = useAuthStore();
     const [showModal, setShowModal] = useState(false);
     const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -128,9 +128,12 @@ export const Projects: React.FC = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setOpenMenu(openMenu === project.id ? null : project.id)}
-                                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary"
+                                    aria-label={language === 'vi' ? 'Tùy chọn dự án' : 'Project options'}
+                                    aria-haspopup="true"
+                                    aria-expanded={openMenu === project.id}
                                 >
-                                    <MoreVertical size={20} className="text-gray-500 dark:text-gray-400" />
+                                    <MoreVertical size={20} className="text-gray-500 dark:text-gray-400" aria-hidden="true" />
                                 </button>
                                 {openMenu === project.id && (() => {
                                     const isOwner = project.ownerId === user?.id;
