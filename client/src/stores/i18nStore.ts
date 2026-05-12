@@ -124,6 +124,8 @@ const translations: Translations = {
     'calendar.noTasks': { en: 'No tasks on this date', vi: 'Không có công việc trong ngày này' },
 
     // Settings
+    'common.deleteComment': { en: 'Delete comment', vi: 'Xóa bình luận' },
+    'common.sendComment': { en: 'Send comment', vi: 'Gửi bình luận' },
     'settings.title': { en: 'Settings', vi: 'Cài đặt' },
     'settings.subtitle': { en: 'Manage your account and preferences', vi: 'Quản lý tài khoản và tùy chọn của bạn' },
     'settings.profile': { en: 'Profile', vi: 'Hồ sơ' },
