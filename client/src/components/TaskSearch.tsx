@@ -29,8 +29,30 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [modifierKey, setModifierKey] = useState('Ctrl');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const detectOS = () => {
+            if (typeof navigator !== 'undefined') {
+                const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+                setModifierKey(isMac ? 'Cmd' : 'Ctrl');
+            }
+        };
+        detectOS();
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -122,8 +144,15 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-16 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:flex items-center">
+                        <kbd className="px-1.5 py-0.5 text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded shadow-sm">
+                            {modifierKey} K
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
