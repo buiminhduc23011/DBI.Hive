@@ -80,6 +80,10 @@ const translations: Translations = {
     'kanban.done': { en: 'Done', vi: 'Hoàn thành' },
     'kanban.dropHere': { en: 'Drop tasks here', vi: 'Thả công việc vào đây' },
 
+    // Comments
+    'comment.delete': { en: 'Delete comment', vi: 'Xóa bình luận' },
+    'comment.send': { en: 'Send comment', vi: 'Gửi bình luận' },
+
     // Tasks
     'task.title': { en: 'Title', vi: 'Tiêu đề' },
     'task.description': { en: 'Description', vi: 'Mô tả' },
