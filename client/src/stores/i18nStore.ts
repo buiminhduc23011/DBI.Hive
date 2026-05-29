@@ -111,6 +111,7 @@ const translations: Translations = {
     'project.completed': { en: 'completed', vi: 'hoàn thành' },
     'project.showArchived': { en: 'Show archived', vi: 'Hiện lưu trữ' },
     'project.archived': { en: 'Archived', vi: 'Đã lưu trữ' },
+    'project.options': { en: 'Project options', vi: 'Tùy chọn dự án' },
     'project.unarchive': { en: 'Unarchive', vi: 'Bỏ lưu trữ' },
     'project.archive': { en: 'Archive', vi: 'Lưu trữ' },
     'project.manageMembers': { en: 'Manage Members', vi: 'Quản lý thành viên' },
