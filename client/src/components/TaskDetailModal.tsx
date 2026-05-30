@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Calendar, User, Flag, MessageSquare, Send, Trash2, Edit2, Check, Clock } from 'lucide-react';
+import { X, Calendar, User, Flag, MessageSquare, Send, Trash2, Edit2, Check, Clock, Loader2 } from 'lucide-react';
 import { Task, TaskItemStatus, Priority, useProjectStore } from '../stores/projectStore';
 import { useAuthStore } from '../stores/authStore';
 import { useI18nStore } from '../stores/i18nStore';
@@ -216,24 +216,25 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                 <button
                                     onClick={() => setIsEditing(!isEditing)}
                                     className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                    title={t('common.edit')}
+                                    aria-label={t('common.edit')} title={t('common.edit')}
                                 >
-                                    <Edit2 size={18} className="text-gray-600 dark:text-gray-400" />
+                                    <Edit2 size={18} className="text-gray-600 dark:text-gray-400" aria-hidden="true" />
                                 </button>
                                 <button
                                     onClick={handleDeleteTask}
                                     className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                    title={t('common.delete')}
+                                    aria-label={t('common.delete')} title={t('common.delete')}
                                 >
-                                    <Trash2 size={18} className="text-red-600 dark:text-red-400" />
+                                    <Trash2 size={18} className="text-red-600 dark:text-red-400" aria-hidden="true" />
                                 </button>
                             </>
                         )}
                         <button
                             onClick={onClose}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            aria-label={t('common.close')}
                         >
-                            <X size={20} className="text-gray-600 dark:text-gray-400" />
+                            <X size={20} className="text-gray-600 dark:text-gray-400" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
@@ -480,9 +481,9 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                                             {comment.userId === user?.id && (
                                                                 <button
                                                                     onClick={() => handleDeleteComment(comment.id)}
-                                                                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                                    aria-label={t('common.delete')} className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                                                                 >
-                                                                    <Trash2 size={14} />
+                                                                    <Trash2 size={14} aria-hidden="true" />
                                                                 </button>
                                                             )}
                                                         </div>
@@ -505,9 +506,13 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                         <button
                                             type="submit"
                                             disabled={isSubmitting || !newComment.trim()}
-                                            className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
+                                            aria-label={t('common.send')} className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
                                         >
-                                            <Send size={18} />
+                                            {isSubmitting ? (
+                                                <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+                                            ) : (
+                                                <Send size={18} aria-hidden="true" />
+                                            )}
                                         </button>
                                     </form>
                                 </div>
