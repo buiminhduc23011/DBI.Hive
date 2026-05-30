@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         aria-label="Open menu"
                     >
-                        <Menu size={24} className="text-gray-700 dark:text-gray-200" />
+                        <Menu size={24} className="text-gray-700 dark:text-gray-200" aria-hidden="true" />
                     </button>
 
                     <div className="flex items-center space-x-2">

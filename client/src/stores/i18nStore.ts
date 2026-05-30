@@ -125,6 +125,9 @@ const translations: Translations = {
 
     // Settings
     'settings.title': { en: 'Settings', vi: 'Cài đặt' },
+
+    // Misc
+    'common.send': { en: 'Send', vi: 'Gửi' },
     'settings.subtitle': { en: 'Manage your account and preferences', vi: 'Quản lý tài khoản và tùy chọn của bạn' },
     'settings.profile': { en: 'Profile', vi: 'Hồ sơ' },
     'settings.notifications': { en: 'Notifications', vi: 'Thông báo' },
