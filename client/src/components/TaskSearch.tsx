@@ -29,6 +29,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [modifierKey, setModifierKey] = useState('Ctrl');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +42,27 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    useEffect(() => {
+        const checkOS = () => {
+            if (typeof navigator !== 'undefined') {
+                const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+                setModifierKey(isMac ? 'Cmd' : 'Ctrl');
+            }
+        };
+        checkOS();
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                inputRef.current?.focus();
+                setIsOpen(true);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     useEffect(() => {
@@ -136,6 +158,13 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     >
                         <X size={16} />
                     </button>
+                )}
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center pointer-events-none">
+                        <kbd className="px-2 py-0.5 text-xs font-semibold text-gray-500 bg-gray-200 border border-gray-300 rounded-md dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 shadow-sm">
+                            {modifierKey} K
+                        </kbd>
+                    </div>
                 )}
             </div>
 
