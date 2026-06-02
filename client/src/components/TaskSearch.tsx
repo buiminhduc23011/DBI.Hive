@@ -29,8 +29,20 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     const [searchText, setSearchText] = useState('');
     const [results, setResults] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [shortcutHint, setShortcutHint] = useState<string>('Ctrl K');
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // Safe to check navigator inside useEffect
+        const detectPlatform = () => {
+            if (typeof navigator !== 'undefined') {
+                const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+                setShortcutHint(isMac ? 'Cmd K' : 'Ctrl K');
+            }
+        };
+        detectPlatform();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -108,8 +120,8 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
     return (
         <div ref={containerRef} className="relative" data-onboarding="search-task">
             {/* Search Button/Input */}
-            <div className="relative">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div className="relative flex items-center">
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                 <input
                     ref={inputRef}
                     type="text"
@@ -122,8 +134,15 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                     aria-controls="task-search-results"
                     aria-autocomplete="list"
                     role="combobox"
-                    className="w-full md:w-64 pl-10 pr-8 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
+                    className="w-full md:w-64 pl-10 pr-16 py-2 bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-dbi-primary focus:bg-white dark:focus:bg-gray-600 rounded-lg text-sm dark:text-white transition-colors"
                 />
+                {!searchText && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden md:block">
+                        <kbd className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded opacity-70">
+                            {shortcutHint}
+                        </kbd>
+                    </div>
+                )}
                 {searchText && (
                     <button
                         onClick={() => {
@@ -132,7 +151,7 @@ export const TaskSearch: React.FC<TaskSearchProps> = ({ onTaskSelect }) => {
                             inputRef.current?.focus();
                         }}
                         aria-label={language === 'vi' ? 'Xóa tìm kiếm' : 'Clear search'}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dbi-primary rounded"
                     >
                         <X size={16} />
                     </button>
