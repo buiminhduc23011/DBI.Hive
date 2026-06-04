@@ -115,6 +115,7 @@ const translations: Translations = {
     'project.archive': { en: 'Archive', vi: 'Lưu trữ' },
     'project.manageMembers': { en: 'Manage Members', vi: 'Quản lý thành viên' },
     'project.noPermission': { en: 'No permission', vi: 'Không có quyền' },
+    'project.options': { en: 'Project options', vi: 'Tùy chọn dự án' },
 
     // Calendar
     'calendar.title': { en: 'Calendar', vi: 'Lịch' },
