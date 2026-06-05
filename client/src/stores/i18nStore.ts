@@ -27,6 +27,7 @@ const translations: Translations = {
     'common.finish': { en: 'Finish', vi: 'Hoàn thành' },
     'common.skip': { en: 'Skip', vi: 'Bỏ qua' },
     'common.allProjects': { en: 'All Projects', vi: 'Tất cả dự án' },
+    'common.send': { en: 'Send', vi: 'Gửi' },
 
     // Auth
     'auth.login': { en: 'Sign In', vi: 'Đăng nhập' },
