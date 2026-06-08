@@ -93,6 +93,7 @@ const translations: Translations = {
     'task.selectProject': { en: 'Select a project', vi: 'Chọn dự án' },
     'task.createTask': { en: 'Create Task', vi: 'Tạo công việc' },
     'task.noDeadline': { en: 'No deadline', vi: 'Chưa có hạn' },
+    'task.sendComment': { en: 'Send comment', vi: 'Gửi bình luận' },
 
     // Priority
     'priority.low': { en: 'Low', vi: 'Thấp' },
