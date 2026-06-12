@@ -83,6 +83,8 @@ const translations: Translations = {
     // Tasks
     'task.title': { en: 'Title', vi: 'Tiêu đề' },
     'task.description': { en: 'Description', vi: 'Mô tả' },
+    'task.deleteComment': { en: 'Delete comment', vi: 'Xóa bình luận' },
+    'task.sendComment': { en: 'Send comment', vi: 'Gửi bình luận' },
     'task.priority': { en: 'Priority', vi: 'Độ ưu tiên' },
     'task.status': { en: 'Status', vi: 'Trạng thái' },
     'task.project': { en: 'Project', vi: 'Dự án' },
