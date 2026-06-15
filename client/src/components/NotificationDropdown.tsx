@@ -75,7 +75,7 @@ export const NotificationDropdown: React.FC = () => {
                 aria-label={getAriaLabel()}
                 aria-expanded={isOpen}
                 aria-haspopup="true"
-                className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary"
             >
                 <Bell size={22} aria-hidden="true" className={unassignedCount > 0 ? 'animate-pulse' : ''} />
                 {totalBadgeCount > 0 && (
@@ -92,9 +92,9 @@ export const NotificationDropdown: React.FC = () => {
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
-                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1"
+                                className="text-sm text-dbi-primary hover:text-dbi-primary/80 flex items-center space-x-1 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                             >
-                                <CheckCheck size={16} />
+                                <CheckCheck size={16} aria-hidden="true" />
                                 <span>Mark all read</span>
                             </button>
                         )}
@@ -103,12 +103,13 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="max-h-96 overflow-y-auto">
                         {/* Unassigned Tasks Alert for Owners/Managers */}
                         {unassignedCount > 0 && (
-                            <div 
+                            <button
+                                type="button"
                                 onClick={() => {
                                     setShowUnassignedModal(true);
                                     setIsOpen(false);
                                 }}
-                                className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer"
+                                className="w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary"
                             >
                                 <div className="flex items-start space-x-3">
                                     <AlertCircle size={20} className="text-orange-500 mt-0.5" />
@@ -124,7 +125,7 @@ export const NotificationDropdown: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         )}
                         
                         {notifications.length === 0 ? (
@@ -158,18 +159,20 @@ export const NotificationDropdown: React.FC = () => {
                                             {!notification.isRead && (
                                                 <button
                                                     onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                                                     title="Mark as read"
+                                                    aria-label={language === 'vi' ? 'Đánh dấu đã đọc' : 'Mark as read'}
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded"
                                                 title="Delete"
+                                                aria-label={language === 'vi' ? 'Xóa' : 'Delete'}
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
@@ -180,7 +183,7 @@ export const NotificationDropdown: React.FC = () => {
 
                     {notifications.length > 0 && (
                         <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80">
+                            <button className="w-full text-center text-sm text-dbi-primary hover:text-dbi-primary/80 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded">
                                 View all notifications
                             </button>
                         </div>
