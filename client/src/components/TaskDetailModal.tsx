@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Calendar, User, Flag, MessageSquare, Send, Trash2, Edit2, Check, Clock } from 'lucide-react';
+import { X, Calendar, User, Flag, MessageSquare, Send, Trash2, Edit2, Check, Clock, Loader2 } from 'lucide-react';
 import { Task, TaskItemStatus, Priority, useProjectStore } from '../stores/projectStore';
 import { useAuthStore } from '../stores/authStore';
 import { useI18nStore } from '../stores/i18nStore';
@@ -505,9 +505,14 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                         <button
                                             type="submit"
                                             disabled={isSubmitting || !newComment.trim()}
-                                            className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
+                                            aria-label={language === 'vi' ? 'Gửi bình luận' : 'Send comment'}
+                                            className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors flex items-center justify-center"
                                         >
-                                            <Send size={18} />
+                                            {isSubmitting ? (
+                                                <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+                                            ) : (
+                                                <Send size={18} aria-hidden="true" />
+                                            )}
                                         </button>
                                     </form>
                                 </div>
