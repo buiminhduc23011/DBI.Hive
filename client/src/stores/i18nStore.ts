@@ -19,6 +19,7 @@ const translations: Translations = {
     'common.edit': { en: 'Edit', vi: 'Sửa' },
     'common.create': { en: 'Create', vi: 'Tạo' },
     'common.search': { en: 'Search', vi: 'Tìm kiếm' },
+    'common.send': { en: 'Send', vi: 'Gửi' },
     'common.loading': { en: 'Loading...', vi: 'Đang tải...' },
     'common.noData': { en: 'No data', vi: 'Không có dữ liệu' },
     'common.confirm': { en: 'Confirm', vi: 'Xác nhận' },
