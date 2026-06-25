@@ -21,7 +21,7 @@ export const NotificationDropdown: React.FC = () => {
     } = useNotificationStore();
     const { tasks, projects } = useProjectStore();
     const { user } = useAuthStore();
-    const { language } = useI18nStore();
+    const { t, language } = useI18nStore();
     
     // Calculate unassigned tasks for owners/managers
     const unassignedTasks = tasks.filter(t => !t.assignedToId && t.status !== 3);
@@ -158,18 +158,20 @@ export const NotificationDropdown: React.FC = () => {
                                             {!notification.isRead && (
                                                 <button
                                                     onClick={() => markAsRead(notification.id)}
-                                                    className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                                                    title="Mark as read"
+                                                    className="p-1 text-gray-400 hover:text-green-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded transition-colors"
+                                                    title={t('notification.markAsRead')}
+                                                    aria-label={t('notification.markAsRead')}
                                                 >
-                                                    <Check size={16} />
+                                                    <Check size={16} aria-hidden="true" />
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => deleteNotification(notification.id)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                                title="Delete"
+                                                className="p-1 text-gray-400 hover:text-red-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-dbi-primary rounded transition-colors"
+                                                title={t('common.delete')}
+                                                aria-label={t('common.delete')}
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={16} aria-hidden="true" />
                                             </button>
                                         </div>
                                     </div>
