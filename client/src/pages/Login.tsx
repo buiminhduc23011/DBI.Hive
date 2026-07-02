@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useI18nStore } from '../stores/i18nStore';
+import { Loader2 } from 'lucide-react';
 
 export const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -79,9 +80,16 @@ export const Login: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                     >
-                        {isLoading ? t('auth.signingIn') : t('auth.login')}
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>{t('auth.signingIn')}</span>
+                            </>
+                        ) : (
+                            <span>{t('auth.login')}</span>
+                        )}
                     </button>
 
                     <p className="text-center text-gray-600">
