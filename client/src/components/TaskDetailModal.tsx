@@ -499,15 +499,20 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, 
                                             type="text"
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
-                                            placeholder={language === 'vi' ? 'Viết bình luận...' : 'Write a comment...'}
+                                            placeholder={t('task.commentPlaceholder')}
                                             className="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:text-white focus:ring-2 focus:ring-dbi-primary focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
                                             disabled={isSubmitting || !newComment.trim()}
+                                            aria-label={t('common.save')}
                                             className="px-4 py-2 bg-dbi-primary text-white rounded-lg hover:bg-dbi-dark disabled:opacity-50 transition-colors"
                                         >
-                                            <Send size={18} />
+                                            {isSubmitting ? (
+                                                <div className="animate-spin h-[18px] w-[18px] border-2 border-white border-t-transparent rounded-full" aria-hidden="true" />
+                                            ) : (
+                                                <Send size={18} aria-hidden="true" />
+                                            )}
                                         </button>
                                     </form>
                                 </div>

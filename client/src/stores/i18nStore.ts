@@ -81,6 +81,7 @@ const translations: Translations = {
     'kanban.dropHere': { en: 'Drop tasks here', vi: 'Thả công việc vào đây' },
 
     // Tasks
+    'task.commentPlaceholder': { en: 'Write a comment...', vi: 'Viết bình luận...' },
     'task.title': { en: 'Title', vi: 'Tiêu đề' },
     'task.description': { en: 'Description', vi: 'Mô tả' },
     'task.priority': { en: 'Priority', vi: 'Độ ưu tiên' },
